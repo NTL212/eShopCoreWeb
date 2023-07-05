@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using eShopCoreWeb.Data.Entities;
 using Microsoft.Identity.Client;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using eShopCoreWeb.Data.Configurations;
 

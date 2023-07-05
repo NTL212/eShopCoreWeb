@@ -12,4 +12,4 @@ namespace eShopCoreWeb.Data.Enums
         Active
     }
 }
-}
+
