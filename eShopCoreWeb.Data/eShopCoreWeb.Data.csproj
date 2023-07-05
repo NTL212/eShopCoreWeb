@@ -215,9 +215,14 @@
     <Compile Include="Enums\OrderStatus.cs" />
     <Compile Include="Enums\Status.cs" />
     <Compile Include="Enums\TransactionStatus.cs" />
+    <Compile Include="Extensions\ModelBuilderExtensions.cs" />
     <Compile Include="Migrations\20230705041215_Initial.cs" />
     <Compile Include="Migrations\20230705041215_Initial.designer.cs">
       <DependentUpon>20230705041215_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\20230705044603_SeedData.cs" />
+    <Compile Include="Migrations\20230705044603_SeedData.designer.cs">
+      <DependentUpon>20230705044603_SeedData.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\EShopDbContextModelSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

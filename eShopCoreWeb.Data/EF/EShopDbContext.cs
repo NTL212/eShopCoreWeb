@@ -8,6 +8,7 @@ using eShopCoreWeb.Data.Entities;
 using Microsoft.Identity.Client;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 using eShopCoreWeb.Data.Configurations;
+using eShopCoreWeb.Data.Extensions;
 
 namespace eShopCoreWeb.Data.EF
 {
@@ -34,6 +35,7 @@ namespace eShopCoreWeb.Data.EF
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
 
+            modelBuilder.Seed();
 
             //base.OnModelCreating(modelBuilder);
         }
