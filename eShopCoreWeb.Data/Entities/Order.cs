@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using eShopCoreWeb.Data.Enums;
 namespace eShopCoreWeb.Data.Entities
 {
     public class Order

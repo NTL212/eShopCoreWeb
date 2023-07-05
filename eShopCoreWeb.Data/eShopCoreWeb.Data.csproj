@@ -160,6 +160,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Configurations\AppConfigConfiguration.cs" />
+    <Compile Include="Configurations\CartConfiguration.cs" />
+    <Compile Include="Configurations\CategoryConfiguration.cs" />
+    <Compile Include="Configurations\CategoryTranslationConfiguration.cs" />
+    <Compile Include="Configurations\ContactConfiguration.cs" />
+    <Compile Include="Configurations\LanguageConfiguration.cs" />
+    <Compile Include="Configurations\OrderConfiguration.cs" />
+    <Compile Include="Configurations\OrderDetailConfiguration.cs" />
+    <Compile Include="Configurations\ProductConfiguration.cs" />
+    <Compile Include="Configurations\ProductInCategoryConfiguration.cs" />
+    <Compile Include="Configurations\ProductTranslationConfiguration.cs" />
+    <Compile Include="Configurations\PromotionConfiguration.cs" />
+    <Compile Include="Configurations\TransactionConfiguration.cs" />
     <Compile Include="EF\EShopDbContext.cs" />
     <Compile Include="Entities\AppConfig.cs" />
     <Compile Include="Entities\Cart.cs" />
@@ -181,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="appsettings.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

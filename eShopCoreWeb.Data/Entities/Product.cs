@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
-
+using eShopCoreWeb.Data.Enums;
 namespace eShopCoreWeb.Data.Entities
 {
     public class Product
