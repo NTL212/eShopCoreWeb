@@ -23,7 +23,6 @@ namespace eShopCoreWeb.Data.EF
 
             var optionsBuilder = new DbContextOptionsBuilder<EShopDbContext>();
             optionsBuilder.UseSqlServer(connectionString);
-
             return new EShopDbContext(optionsBuilder.Options);
         }
     }
