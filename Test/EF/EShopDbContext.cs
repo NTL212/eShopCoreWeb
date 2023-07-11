@@ -17,6 +17,7 @@ namespace eShopCoreWeb.Data.EF
         public EShopDbContext(DbContextOptions options) : base(options)
         {
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CartConfiguration());
@@ -37,6 +38,7 @@ namespace eShopCoreWeb.Data.EF
 
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
 
             modelBuilder.Seed();
 
@@ -73,6 +75,7 @@ namespace eShopCoreWeb.Data.EF
 
 
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
 
     }
 }
