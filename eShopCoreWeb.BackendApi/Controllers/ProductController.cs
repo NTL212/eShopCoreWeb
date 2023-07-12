@@ -1,6 +1,7 @@
 ﻿using eShopCoreWeb.Application.Catalog.Products;
 using eShopCoreWeb.ViewModels.Catalog.ProductImages;
 using eShopCoreWeb.ViewModels.Catalog.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
@@ -8,6 +9,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : Controller
     {
         private readonly IPublicProductService _publicProductService;
@@ -32,7 +34,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
         //    return Ok(products);
         //}
         //http://localhost:port/products?pageIndex=1&pageSize=1&CategoryId=
-        [HttpGet("{langugeId}")]
+        [HttpGet("{languageId}")]
         public async Task<IActionResult> GetAllPaging(string languageId,[FromQuery]GetPublicProductPagingRequest request)
         {
             if (!ModelState.IsValid)
