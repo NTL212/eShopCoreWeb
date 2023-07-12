@@ -1,16 +1,26 @@
 using eShopCoreWeb.Application.Catalog.Products;
 using eShopCoreWeb.Application.Common;
+using eShopCoreWeb.Application.System.Users;
 using eShopCoreWeb.Data.EF;
+using eShopCoreWeb.Data.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddIdentity<AppUser, AppRole>()
+                .AddEntityFrameworkStores<EShopDbContext>()
+                .AddDefaultTokenProviders();
 builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IPublicProductService, PublicProductService>();
 builder.Services.AddTransient<IManageProductService, ManageProductService>();
 builder.Services.AddTransient<IStorageService, FileStorageService>();
+builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<UserManager<AppUser>,UserManager<AppUser>>();
+builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+builder.Services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
 IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
