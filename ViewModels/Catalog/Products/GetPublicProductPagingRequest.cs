@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace eShopCoreWeb.ViewModels.Catalog.Dtos
+using eShopCoreWeb.ViewModels.Common;
+namespace eShopCoreWeb.ViewModels.Catalog.Products
 {
     public class GetPublicProductPagingRequest : PagingRequestBase
     {
