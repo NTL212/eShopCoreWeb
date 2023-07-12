@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopCoreWeb", "eShopCoreWeb\eShopCoreWeb.csproj", "{07CF2257-A247-4E11-83EA-532E883F621B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopCoreWeb.WebApp", "eShopCoreWeb\eShopCoreWeb.WebApp.csproj", "{07CF2257-A247-4E11-83EA-532E883F621B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopCoreWeb.Data", "Test\eShopCoreWeb.Data.csproj", "{D4E39067-5EEF-4BFB-AACF-7AC2A4550FE2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopCoreWeb.Application", "eShopCoreWeb.Application\eShopCoreWeb.Application.csproj", "{5D9C5E3A-A5BB-4AD4-8288-15F08A685DCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopCoreWeb.Utilities", "eShopCoreWeb.Utilities\eShopCoreWeb.Utilities.csproj", "{0987EAD3-DA72-4C82-A335-D6A4E75519DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopCoreWeb.Utilities", "eShopCoreWeb.Utilities\eShopCoreWeb.Utilities.csproj", "{0987EAD3-DA72-4C82-A335-D6A4E75519DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopCoreWeb.BackendApi", "eShopCoreWeb.BackendApi\eShopCoreWeb.BackendApi.csproj", "{6DF08473-0471-4314-A1E0-199D64FDBA39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopCoreWeb.BackendApi", "eShopCoreWeb.BackendApi\eShopCoreWeb.BackendApi.csproj", "{6DF08473-0471-4314-A1E0-199D64FDBA39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopCoreWeb.ViewModels", "ViewModels\eShopCoreWeb.ViewModels.csproj", "{120D332E-A2BA-43DE-BA73-DE4B45613981}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopCoreWeb.ViewModels", "ViewModels\eShopCoreWeb.ViewModels.csproj", "{120D332E-A2BA-43DE-BA73-DE4B45613981}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

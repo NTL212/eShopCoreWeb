@@ -3,6 +3,9 @@ using eShopCoreWeb.Application.Common;
 using eShopCoreWeb.Application.System.Users;
 using eShopCoreWeb.Data.EF;
 using eShopCoreWeb.Data.Entities;
+using eShopCoreWeb.ViewModels.System.Users;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +26,9 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<UserManager<AppUser>,UserManager<AppUser>>();
 builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
 builder.Services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+
+builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
+builder.Services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
 IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -32,7 +38,7 @@ builder.Services.AddDbContext<EShopDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger eShop Solution", Version = "v1" });
