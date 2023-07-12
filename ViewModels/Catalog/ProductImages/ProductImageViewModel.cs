@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eShopCoreWeb.ViewModels.Catalog.Dtos
+namespace eShopCoreWeb.ViewModels.Catalog.ProductImages
 {
     public class ProductImageViewModel
     {
