@@ -12,11 +12,9 @@ namespace eShopCoreWeb.BackendApi.Controllers
     [Authorize]
     public class ProductsController : Controller
     {
-        private readonly IPublicProductService _publicProductService;
         private readonly IManageProductService _manageProductService;
-        public ProductsController(IPublicProductService productService, IManageProductService manageProductService)
+        public ProductsController(IManageProductService manageProductService)
         {
-            _publicProductService = productService;
             _manageProductService = manageProductService;
         }
         //http://localhost:port/product/paging
@@ -41,7 +39,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var products = await _publicProductService.GetAllByCategoryId(languageId, request);
+            var products = await _manageProductService.GetAllByCategoryId(languageId, request);
             return Ok(products);
         }
         //http://localhost:port/product/1

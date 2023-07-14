@@ -1,5 +1,8 @@
-﻿using eShopCoreWeb.ViewModels.System.Users;
+﻿using eShopCoreWeb.ViewModels.Common;
+using eShopCoreWeb.ViewModels.System.Users;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace eShopCoreWeb.AdminApp.Services
@@ -20,6 +23,18 @@ namespace eShopCoreWeb.AdminApp.Services
             var response = await client.PostAsync("/api/users/authenticate", httpContent);
             var token = await response.Content.ReadAsStringAsync();
             return token;
+        }
+
+        public async Task<PagedResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request)
+        {
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.BearerToken);
+            var response = await client.GetAsync($"/api/users/paging?pageIndex=" +
+                $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}&bearerToken={request.BearerToken}");
+            var body = await response.Content.ReadAsStringAsync();
+            var users = JsonConvert.DeserializeObject<PagedResult<UserViewModel>>(body);
+            return users;
         }
 
         public Task<bool> Register(RegisterRequest request)

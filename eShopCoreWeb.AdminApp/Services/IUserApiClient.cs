@@ -1,4 +1,5 @@
-﻿using eShopCoreWeb.ViewModels.System.Users;
+﻿using eShopCoreWeb.ViewModels.Common;
+using eShopCoreWeb.ViewModels.System.Users;
 
 namespace eShopCoreWeb.AdminApp.Services
 {
@@ -6,5 +7,6 @@ namespace eShopCoreWeb.AdminApp.Services
     {
         Task<string> Authenticate(LoginRequest request);
         Task<bool> Register(RegisterRequest request);
+        Task<PagedResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request);
     }
 }
