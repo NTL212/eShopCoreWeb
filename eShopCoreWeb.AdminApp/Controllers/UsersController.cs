@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace eShopCoreWeb.AdminApp.Controllers
 {
@@ -39,46 +40,21 @@ namespace eShopCoreWeb.AdminApp.Controllers
             var data = await _userApiClient.GetUserPaging(request);
             if (data == null)
                 return BadRequest("Khong tim duoc");
-            return View(data);
+            return View(data.ResultObj);
         }
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
             var user = await _userApiClient.GetUserById(id);
-            return View(user);
-        }
-        [HttpGet]
-        public async Task<IActionResult> Login()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return View();
+            return View(user.ResultObj);
         }
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Users");
+            return RedirectToAction("Index", "Login");
         }
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginRequest request)
-        {
-            if (!ModelState.IsValid)
-                return View(ModelState);
-            var token = await _userApiClient.Authenticate(request);
-            var userPrincipal = this.ValidateToken(token);
-            var authProperties = new AuthenticationProperties
-            {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = false
-            };
-            HttpContext.Session.SetString("Token", token);
-            await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        userPrincipal,
-                        authProperties);
-
-            return RedirectToAction("Index", "Home");
-        }
+        
         [HttpGet("tao-nguoi-dung")]
         public IActionResult Create()
         {
@@ -87,46 +63,47 @@ namespace eShopCoreWeb.AdminApp.Controllers
         [HttpPost("tao-nguoi-dung")]
         public async Task<IActionResult> Create(RegisterRequest request)
         {
-            if(!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid)
                 return View();
-            }
+
             var result = await _userApiClient.Register(request);
-            if(result)
-            {
-                return RedirectToAction("Index", "Users");
-            }
+            if (result.IsSuccessed)
+                return RedirectToAction("Index");
+
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         [HttpGet("cap-nhat")]
         public async Task<IActionResult> Update(Guid id)
         {
-            var user = await _userApiClient.GetUserById(id);
-            if (user == null)
-                return RedirectToAction("Index", "Users");
-            var updateRequest = new UserUpdateRequest()
+            var result = await _userApiClient.GetUserById(id);
+            if (result.IsSuccessed)
             {
-                Dob = user.Dob,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
-                Id = id,
-            };
-            return View(updateRequest);
+                var user = result.ResultObj;
+                var updateRequest = new UserUpdateRequest()
+                {
+                    Dob = user.Dob,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    Id = id
+                };
+                return View(updateRequest);
+            }
+            return RedirectToAction("Error", "Home");
         }
         [HttpPost("cap-nhat")]
         public async Task<IActionResult> Update(UserUpdateRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return View();
-            }
-            var result = await _userApiClient.Udpate(request.Id, request);
-            if (result)
-            {
-                return RedirectToAction("Index", "Users");
-            }
+
+            var result = await _userApiClient.Update(request.Id, request);
+            if (result.IsSuccessed)
+                return RedirectToAction("Index");
+
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
         [HttpGet("xoa-nguoi-dung/{id}")]

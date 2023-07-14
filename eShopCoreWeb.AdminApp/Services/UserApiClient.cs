@@ -1,6 +1,7 @@
 ﻿using eShopCoreWeb.ViewModels.Common;
 using eShopCoreWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,28 +18,36 @@ namespace eShopCoreWeb.AdminApp.Services
             _httpClientFactor = httpClientFactory;  
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<string> Authenticate(LoginRequest request)
+        public async Task<ApiResult<string>> Authenticate(LoginRequest request)
         {
             var json = JsonConvert.SerializeObject(request);
             var httpContent = new StringContent(json,Encoding.UTF8, "application/json");
             var client = _httpClientFactor.CreateClient();
             client.BaseAddress = new Uri("https://localhost:44321");
             var response = await client.PostAsync("/api/users/authenticate", httpContent);
-            var token = await response.Content.ReadAsStringAsync();
-            return token;
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(await response.Content.ReadAsStringAsync());
+            }
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<string>>(await response.Content.ReadAsStringAsync());
         }
 
-        public async Task<UserViewModel> GetUserById(Guid id)
+        public async Task<ApiResult<UserViewModel>> GetUserById(Guid id)
         {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
             var client = _httpClientFactor.CreateClient();
             client.BaseAddress = new Uri("https://localhost:44321");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
             var response = await client.GetAsync($"/api/users/{id}");
             var body = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<UserViewModel>(body);
-            return users;
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<UserViewModel>>(body);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<UserViewModel>>(body);
         }
 
-        public async Task<PagedResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request)
+        public async Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request)
         {
             var client = _httpClientFactor.CreateClient();
             client.BaseAddress = new Uri("https://localhost:44321");
@@ -46,11 +55,13 @@ namespace eShopCoreWeb.AdminApp.Services
             var response = await client.GetAsync($"/api/users/paging?pageIndex=" +
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}&bearerToken={request.BearerToken}");
             var body = await response.Content.ReadAsStringAsync();
-            var users = JsonConvert.DeserializeObject<PagedResult<UserViewModel>>(body);
-            return users;
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<PagedResult<UserViewModel>>>(body);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<PagedResult<UserViewModel>>>(body);
         }
 
-        public async Task<bool> Register(RegisterRequest request)
+        public async Task<ApiResult<bool>> Register(RegisterRequest request)
         {
             var client = _httpClientFactor.CreateClient();
             client.BaseAddress = new Uri("https://localhost:44321");
@@ -59,10 +70,14 @@ namespace eShopCoreWeb.AdminApp.Services
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync($"/api/users", httpContent);
-            return response.IsSuccessStatusCode;
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
-        public async Task<bool> Udpate(Guid id, UserUpdateRequest request)
+        public async Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request)
         {
             var client = _httpClientFactor.CreateClient();
             client.BaseAddress = new Uri("https://localhost:44321");
@@ -73,9 +88,13 @@ namespace eShopCoreWeb.AdminApp.Services
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PutAsync($"/api/users/{id}", httpContent);
-            return response.IsSuccessStatusCode;
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
-        public async Task<bool> Delete(Guid id)
+        public async Task<ApiResult<bool>> Delete(Guid id)
         {
             var client = _httpClientFactor.CreateClient();
             client.BaseAddress = new Uri("https://localhost:44321");
@@ -83,7 +102,11 @@ namespace eShopCoreWeb.AdminApp.Services
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
             var response = await client.DeleteAsync($"/api/users/{id}");
-            return response.IsSuccessStatusCode;
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
     }
 }

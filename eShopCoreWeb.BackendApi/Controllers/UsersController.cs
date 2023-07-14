@@ -25,9 +25,9 @@ namespace eShopCoreWeb.BackendApi.Controllers
                 return BadRequest(ModelState);
             }
             var resultToken = await _userService.Authenticate(request);
-            if(string.IsNullOrEmpty(resultToken))
+            if(string.IsNullOrEmpty(resultToken.ResultObj))
             {
-                return BadRequest("Username or password is incorrect");
+                return BadRequest(resultToken);
             }
             //else
             //{
@@ -41,29 +41,27 @@ namespace eShopCoreWeb.BackendApi.Controllers
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-            var resultRegis = await _userService.Register(request);
-            if (!resultRegis)
+
+            var result = await _userService.Register(request);
+            if (!result.IsSuccessed)
             {
-                return BadRequest("Register is unsuccessful.");
+                return BadRequest(result);
             }
-            return Ok();
+            return Ok(result);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id,[FromBody] UserUpdateRequest request)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
-            var resultRegis = await _userService.UpdateUser(id, request);
-            if (!resultRegis)
+
+            var result = await _userService.UpdateUser(id, request);
+            if (!result.IsSuccessed)
             {
-                return BadRequest("Update is unsuccessful.");
+                return BadRequest(result);
             }
-            return Ok();
+            return Ok(result);
         }
         // http://localhost/api/users/paging?pageIndex=1&pageSize=10&keyword=
         [HttpGet("paging")]
