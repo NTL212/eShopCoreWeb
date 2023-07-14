@@ -13,6 +13,9 @@ namespace eShopCoreWeb.Application.System.Users
     {
         Task<string> Authenticate(LoginRequest request);
         Task<bool> Register(RegisterRequest request);
+        Task<bool> UpdateUser(Guid id, UserUpdateRequest request);
+        Task<bool> DeleteUser(Guid id);
+        Task<UserViewModel> GetById(Guid id);
         Task<PagedResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request);
     }
 }

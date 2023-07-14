@@ -7,6 +7,9 @@ namespace eShopCoreWeb.AdminApp.Services
     {
         Task<string> Authenticate(LoginRequest request);
         Task<bool> Register(RegisterRequest request);
+        Task<bool> Udpate(Guid id, UserUpdateRequest request);
+        Task<bool> Delete(Guid id);
+        Task<UserViewModel> GetUserById(Guid id);
         Task<PagedResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request);
     }
 }

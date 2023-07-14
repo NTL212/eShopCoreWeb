@@ -59,6 +59,14 @@ namespace eShopCoreWeb.Application.System.Users
 
         public async Task<bool> Register(RegisterRequest request)
         {
+            if(_userManager.FindByNameAsync(request.UserName) != null)
+            {
+                return false;
+            }
+            if (_userManager.FindByEmailAsync(request.Email) != null)
+            {
+                return false;
+            }
             var user = new AppUser()
             {
                 Dob = request.Dob,
@@ -106,12 +114,59 @@ namespace eShopCoreWeb.Application.System.Users
             //4. Select and projection
             var pagedResult = new PagedResult<UserViewModel>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
                 Items = data
             };
             return pagedResult;
         }
 
+        public async  Task<bool> UpdateUser(Guid id, UserUpdateRequest request)
+        {
+            if (await _userManager.Users.AnyAsync(x=>x.Email ==request.Email && x.Id != id))
+            {
+                return false;
+            }
+            var user =await  _userManager.FindByIdAsync(id.ToString());
 
+            user.Dob = request.Dob;
+            user.Email = request.Email;
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.PhoneNumber = request.PhoneNumber;
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<UserViewModel> GetById(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            var userVm = new UserViewModel()
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                FirstName = user.FirstName,
+                Dob = user.Dob,
+                Id = user.Id,
+                LastName = user.LastName,
+                UserName = user.UserName
+            };
+            return userVm;
+        }
+        public async Task<bool> DeleteUser(Guid id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

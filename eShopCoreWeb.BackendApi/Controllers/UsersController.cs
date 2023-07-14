@@ -51,12 +51,38 @@ namespace eShopCoreWeb.BackendApi.Controllers
             }
             return Ok();
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id,[FromBody] UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var resultRegis = await _userService.UpdateUser(id, request);
+            if (!resultRegis)
+            {
+                return BadRequest("Update is unsuccessful.");
+            }
+            return Ok();
+        }
         // http://localhost/api/users/paging?pageIndex=1&pageSize=10&keyword=
         [HttpGet("paging")]
         public async Task<IActionResult> GetUserPaging([FromQuery] GetUserPagingRequest request)
         {
             var users = await _userService.GetUserPaging(request);
             return Ok(users);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var user = await _userService.GetById(id);
+            return Ok(user);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var result = await _userService.DeleteUser(id);
+            return Ok(result);
         }
     }
 }

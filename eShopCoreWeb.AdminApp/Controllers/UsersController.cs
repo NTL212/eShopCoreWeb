@@ -23,7 +23,9 @@ namespace eShopCoreWeb.AdminApp.Controllers
             _userApiClient = userApiClient;
             _configuration = configuration;
         }
-        public async Task<IActionResult> Index(string keyword="default", int pageIndex = 1, int pageSize = 10)
+        [Authorize]
+        [HttpGet("danh-sach-nguoi-dung")]
+        public async Task<IActionResult> Index(string keyword="default", int pageIndex = 1, int pageSize = 1)
         {
             var sessions = HttpContext.Session.GetString("Token");
 
@@ -38,6 +40,12 @@ namespace eShopCoreWeb.AdminApp.Controllers
             if (data == null)
                 return BadRequest("Khong tim duoc");
             return View(data);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var user = await _userApiClient.GetUserById(id);
+            return View(user);
         }
         [HttpGet]
         public async Task<IActionResult> Login()
@@ -71,12 +79,12 @@ namespace eShopCoreWeb.AdminApp.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-        [HttpGet]
+        [HttpGet("tao-nguoi-dung")]
         public IActionResult Create()
         {
             return View();
         }
-        [HttpPost]
+        [HttpPost("tao-nguoi-dung")]
         public async Task<IActionResult> Create(RegisterRequest request)
         {
             if(!ModelState.IsValid)
@@ -90,7 +98,43 @@ namespace eShopCoreWeb.AdminApp.Controllers
             }
             return View(request);
         }
-
+        [HttpGet("cap-nhat")]
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var user = await _userApiClient.GetUserById(id);
+            if (user == null)
+                return RedirectToAction("Index", "Users");
+            var updateRequest = new UserUpdateRequest()
+            {
+                Dob = user.Dob,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                Id = id,
+            };
+            return View(updateRequest);
+        }
+        [HttpPost("cap-nhat")]
+        public async Task<IActionResult> Update(UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            var result = await _userApiClient.Udpate(request.Id, request);
+            if (result)
+            {
+                return RedirectToAction("Index", "Users");
+            }
+            return View(request);
+        }
+        [HttpGet("xoa-nguoi-dung/{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _userApiClient.Delete(id);
+            return RedirectToAction("Index", "Users");
+        }
         private ClaimsPrincipal ValidateToken(string jwtToken)
         {
             IdentityModelEventSource.ShowPII = true;
