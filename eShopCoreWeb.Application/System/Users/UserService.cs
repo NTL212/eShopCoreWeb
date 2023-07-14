@@ -40,11 +40,10 @@ namespace eShopCoreWeb.Application.System.Users
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName, user.UserName),
-                new Claim(ClaimTypes.Name, request.UserName),
-                new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
-                new Claim(ClaimTypes.Role, string.Join(";", roles))
+                 new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.GivenName,user.FirstName),
+                new Claim(ClaimTypes.Role, string.Join(";",roles)),
+                new Claim(ClaimTypes.Name, request.UserName)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -80,13 +79,16 @@ namespace eShopCoreWeb.Application.System.Users
         public async Task<PagedResult<UserViewModel>> GetUserPaging(GetUserPagingRequest request)
         {
             var query = _userManager.Users;
-            if (!string.IsNullOrEmpty(request.Keyword))
+            if (!string.IsNullOrEmpty(request.Keyword) && request.Keyword != "default")
             {
                 query = query.Where(x => x.UserName.Contains(request.Keyword)
                  || x.PhoneNumber.Contains(request.Keyword));
             }
-
-            //3. Paging
+            else
+            {
+                query = query.Where(x => x.UserName.Length > 1);
+            }
+            //3.Paging
             int totalRow = await query.CountAsync();
 
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
@@ -109,5 +111,7 @@ namespace eShopCoreWeb.Application.System.Users
             };
             return pagedResult;
         }
+
+
     }
 }

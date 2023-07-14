@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace eShopCoreWeb.AdminApp.Controllers
 {
@@ -22,7 +23,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
             _userApiClient = userApiClient;
             _configuration = configuration;
         }
-        public async Task<IActionResult> Index(string keyword="test", int pageIndex = 1, int pageSize = 1)
+        public async Task<IActionResult> Index(string keyword="default", int pageIndex = 1, int pageSize = 10)
         {
             var sessions = HttpContext.Session.GetString("Token");
 
@@ -70,6 +71,26 @@ namespace eShopCoreWeb.AdminApp.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(RegisterRequest request)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View();
+            }
+            var result = await _userApiClient.Register(request);
+            if(result)
+            {
+                return RedirectToAction("Index", "Users");
+            }
+            return View(request);
+        }
+
         private ClaimsPrincipal ValidateToken(string jwtToken)
         {
             IdentityModelEventSource.ShowPII = true;

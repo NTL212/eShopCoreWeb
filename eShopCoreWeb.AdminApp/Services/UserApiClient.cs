@@ -37,9 +37,16 @@ namespace eShopCoreWeb.AdminApp.Services
             return users;
         }
 
-        public Task<bool> Register(RegisterRequest request)
+        public async Task<bool> Register(RegisterRequest request)
         {
-            throw new NotImplementedException();
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"/api/users", httpContent);
+            return response.IsSuccessStatusCode;
         }
     }
 }
