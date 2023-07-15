@@ -6,6 +6,13 @@
     ViewData["Title"] = "Danh sách người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}
 <div class="container-fluid">
 <h1>Danh sách người dùng</h1>
 <!-- DataTales Example -->
@@ -16,12 +23,22 @@
     <!-- DataTales Example -->
     <div class="card shadow mb-4"><div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary"><a class="btn btn-success" asp-controller="Users" asp-action="Create">Tạo mới người dùng </a></h6>
-            <form asp-action="Index" method="get" >
+            <form asp-action="Index" method="get" class="d-none d-sm-inline-block form-inline mr-auto mw-100 navbar-search">
                 <input type="text" name="keyword" class="form-control" />
-                <button type="submit">Tìm kiếm</button>
+                <button class="btn btn-primary" type="submit"><i class="fas fa-search fa-sm"></i> Tìm kiếm</button>
             </form>
         </div>
         <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    @if (ViewBag.ResultMsg!=null)
+                    {
+                        <div class="alert alert-success" role="alert">
+                            @ViewBag.ResultMsg
+                        </div>
+                    }
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -58,9 +75,10 @@
                                     @Html.DisplayFor(modelItem => item.Email)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("Chỉnh sửa", "Update","Users", new { id=item.Id }) |
+                                    @Html.ActionLink("Sửa", "Update","Users", new { id=item.Id }) |
                                     @Html.ActionLink("Chi tiết", "Details", new { id=item.Id }) |
-                                    @Html.ActionLink("Xóa", "Delete", new { id=item.Id })
+                                    @Html.ActionLink("Xóa", "Delete", new { id=item.Id }) |
+                                    @Html.ActionLink("Gan quyen", "RoleAssign", new { id=item.Id })
                                 </td>
                             </tr>
                         }

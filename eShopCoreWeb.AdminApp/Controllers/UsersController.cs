@@ -12,21 +12,29 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
+using eShopCoreWeb.ViewModels.Common;
 
 namespace eShopCoreWeb.AdminApp.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
         private readonly IUserApiClient _userApiClient;
+        private readonly IRoleApiClient _roleApiClient;
         private readonly IConfiguration _configuration;
-        public UsersController(IUserApiClient userApiClient, IConfiguration configuration)
+        [AllowAnonymous]
+        public IActionResult Forbidden()
+        {
+            return View();
+        }
+        public UsersController(IUserApiClient userApiClient, IRoleApiClient roleApiClient, IConfiguration configuration)
         { 
             _userApiClient = userApiClient;
             _configuration = configuration;
+            _roleApiClient = roleApiClient;
         }
-        [Authorize]
         [HttpGet("danh-sach-nguoi-dung")]
-        public async Task<IActionResult> Index(string keyword="default", int pageIndex = 1, int pageSize = 1)
+        public async Task<IActionResult> Index(string keyword="default", int pageIndex = 1, int pageSize = 2)
         {
             var sessions = HttpContext.Session.GetString("Token");
 
@@ -40,6 +48,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
             var data = await _userApiClient.GetUserPaging(request);
             if (data == null)
                 return BadRequest("Khong tim duoc");
+            ViewBag.ResultMsg = TempData["result"];
             return View(data.ResultObj);
         }
         [HttpGet]
@@ -68,8 +77,10 @@ namespace eShopCoreWeb.AdminApp.Controllers
 
             var result = await _userApiClient.Register(request);
             if (result.IsSuccessed)
+            {
+                TempData["result"] = "Thêm người dùng thành công";
                 return RedirectToAction("Index");
-
+            }
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
@@ -93,6 +104,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
             }
             return RedirectToAction("Error", "Home");
         }
+
         [HttpPost("cap-nhat")]
         public async Task<IActionResult> Update(UserUpdateRequest request)
         {
@@ -101,33 +113,70 @@ namespace eShopCoreWeb.AdminApp.Controllers
 
             var result = await _userApiClient.Update(request.Id, request);
             if (result.IsSuccessed)
+            {
+                TempData["result"] = "Cập nhật người dùng thành công";
                 return RedirectToAction("Index");
+            }
 
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
+
         [HttpGet("xoa-nguoi-dung/{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _userApiClient.Delete(id);
-            return RedirectToAction("Index", "Users");
+            var result = await _userApiClient.Delete(id);
+            if(result.IsSuccessed)
+            {
+                TempData["result"] = "Xóa người dùng thành công";
+                return RedirectToAction("Index");
+            }
+            TempData["result"] = "Xóa người dùng không thành công";
+            return RedirectToAction("Index");
+
         }
-        private ClaimsPrincipal ValidateToken(string jwtToken)
+        [HttpGet("cap-nhat-role")]
+        public async Task<IActionResult> RoleAssign(Guid id)
         {
-            IdentityModelEventSource.ShowPII = true;
+            var roleAssignRequsest = await GetRoleAssignRequest(id);
+            return View(roleAssignRequsest);
+        }
 
-            SecurityToken validatedToken;
-            TokenValidationParameters validationParameters = new TokenValidationParameters();
+        [HttpPost("cap-nhat-role")]
+        public async Task<IActionResult> RoleAssign(RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
 
-            validationParameters.ValidateLifetime = true;
+            var result = await _userApiClient.RoleAssign(request.RoleId, request);
 
-            validationParameters.ValidAudience = _configuration["Tokens:Issuer"];
-            validationParameters.ValidIssuer = _configuration["Tokens:Issuer"];
-            validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Cập nhật quyền thành công";
+                return RedirectToAction("Index");
+            }
 
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwtToken, validationParameters, out validatedToken);
+            ModelState.AddModelError("", result.Message);
+            var roleAssignRequest = await GetRoleAssignRequest(request.RoleId);
 
-            return principal;
+            return View(roleAssignRequest);
+        }
+        public async Task<RoleAssignRequest> GetRoleAssignRequest(Guid id)
+        {
+            var userObj = await _userApiClient.GetUserById(id);
+            var roleObj = await _roleApiClient.GetAll();
+            var roleAssignRequest = new RoleAssignRequest();
+            roleAssignRequest.RoleId = userObj.ResultObj.Id;
+            foreach (var role in roleObj.ResultObj)
+            {
+                roleAssignRequest.Roles.Add(new SelectItem()
+                {
+                    Id = role.Id.ToString(),
+                    Name = role.Name,
+                    Selected = userObj.ResultObj.Roles.Contains(role.Name)
+                });
+            }
+            return roleAssignRequest;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace eShopCoreWeb.AdminApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="admin")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

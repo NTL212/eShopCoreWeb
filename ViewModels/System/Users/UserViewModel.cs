@@ -22,5 +22,6 @@ namespace eShopCoreWeb.ViewModels.System.Users
         public string Email { get; set; }
         [Display(Name = "Ngày sinh")]
         public DateTime Dob { get; set; }
+        public IList<string> Roles { get; set; }
     }
 }
