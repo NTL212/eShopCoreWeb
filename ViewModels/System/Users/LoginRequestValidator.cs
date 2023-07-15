@@ -11,8 +11,8 @@ namespace eShopCoreWeb.ViewModels.System.Users
     {
         public LoginRequestValidator()
         {
-            RuleFor(x => x.UserName).NotEmpty().WithMessage("User name is required").MaximumLength(50);
-            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required").MinimumLength(6).WithMessage("Password is at least 6 character");
+            RuleFor(x => x.UserName).NotEmpty().MaximumLength(50);
+            RuleFor(x => x.Password).NotEmpty().MinimumLength(6).WithMessage("Password is at least 6 character");
         }
     }
 }

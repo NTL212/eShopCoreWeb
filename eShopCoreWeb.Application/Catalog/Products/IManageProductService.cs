@@ -36,6 +36,8 @@ namespace eShopCoreWeb.Application.Catalog.Products
 
         Task<List<ProductImageViewModel>> GetListImage(int productId);
 
+        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request);
 
+        Task<List<ProductViewModel>> GetAll(string languageId);
     }
 }

@@ -9,17 +9,17 @@ namespace eShopCoreWeb.Controllers
     [Route("cua-hang")]
     public class ProductController : Controller
     {
-        private readonly IPublicProductService _publicProductService;
-        public ProductController(IPublicProductService productService)
+        private readonly IManageProductService _manageProductService;
+        public ProductController(IManageProductService productService)
         {
-            _publicProductService = productService;
+            _manageProductService = productService;
         }
         [Route("san-pham")]
         // GET: ProductsController
         public async Task<IActionResult> Index()
         {
 
-            var products = await _publicProductService.GetAll("vi");
+            var products = await _manageProductService.GetAll("vi");
             return View(products);
         }
 
