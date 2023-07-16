@@ -128,17 +128,18 @@ namespace eShopCoreWeb.Application.Catalog.Products
             //1. Select join
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoryId equals c.Id
+                        //join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        //join c in _context.Categories on pic.CategoryId equals c.Id
                         where pt.LanguageId == request.LanguageId
-                        select new { p, pt, pic };
+                        select new { p, pt};
             //2. filter
-            if (!string.IsNullOrEmpty(request.Keyword))
-                query = query.Where(x => x.pt.Name.Contains(request.Keyword));
-
-            if (request.CategoryIds.Count > 0)
+            if (!string.IsNullOrEmpty(request.Keyword) && request.Keyword != "default" )
             {
-                query = query.Where(p => request.CategoryIds.Contains(p.pic.CategoryId));
+                query = query.Where(x => x.pt.Name.Contains(request.Keyword) || x.pt.SeoAlias.Contains(request.Keyword));
+            }
+            else
+            {
+                query = query.Where(x => x.pt.Name !=null);
             }
             //3. Paging
             int totalRow = await query.CountAsync();
@@ -253,7 +254,7 @@ namespace eShopCoreWeb.Application.Catalog.Products
             productTranslations.SeoTitle = request.SeoTitle;
             productTranslations.Description = request.Description;
             productTranslations.Details = request.Details;
-
+            _context.ProductTranslations.Update(productTranslations);
             //Save image
             if (request.ThumbnailImage != null)
             {

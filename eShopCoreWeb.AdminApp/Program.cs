@@ -25,6 +25,7 @@ builder.Services.AddSession(options =>
 );
 builder.Services.AddTransient<IUserApiClient, UserApiClient>();
 builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
+builder.Services.AddTransient<IProductApiClient,ProductApiClient>();
 
 var app = builder.Build();
 

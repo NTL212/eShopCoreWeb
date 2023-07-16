@@ -18,30 +18,30 @@ namespace eShopCoreWeb.BackendApi.Controllers
             _manageProductService = manageProductService;
         }
         //http://localhost:port/product/paging
-        //[HttpGet("paging")]
-        //public async Task<IActionResult> GetAllPaging([FromQuery] GetManageProductPagingRequest request)
-        //{
-        //    var products = await _manageProductService.GetAllPaging(request);
-        //    return Ok(products);
-        //}
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetManageProductPagingRequest request)
+        {
+            var products = await _manageProductService.GetAllPaging(request);
+            return Ok(products);
+        }
         ////http://localhost:port/products
         //[HttpGet("{languageId}")]
         //public async Task<IActionResult> GetAll(string languageId)
         //{
-        //    var products = await _publicProductService.GetAll(languageId);
+        //    var products = await _manageProductService.GetAll(languageId);
         //    return Ok(products);
         //}
-        //http://localhost:port/products?pageIndex=1&pageSize=1&CategoryId=
-        [HttpGet("{languageId}")]
-        public async Task<IActionResult> GetAllPaging(string languageId,[FromQuery]GetPublicProductPagingRequest request)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var products = await _manageProductService.GetAllByCategoryId(languageId, request);
-            return Ok(products);
-        }
+        ////http://localhost:port/products?pageIndex=1&pageSize=1&CategoryId=
+        //[HttpGet("{languageId}")]
+        //public async Task<IActionResult> GetAllPaging(string languageId,[FromQuery]GetPublicProductPagingRequest request)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var products = await _manageProductService.GetAllByCategoryId(languageId, request);
+        //    return Ok(products);
+        //}
         //http://localhost:port/product/1
         [HttpGet("{productId}/{languageId}")]
         public async Task<IActionResult> GetById(int productId, string languageId)
@@ -52,6 +52,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
             return Ok(product);
         }
         [HttpPost]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm]ProductCreateRequest request)
         {
             if(!ModelState.IsValid)
@@ -66,6 +67,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
         }
 
         [HttpPut]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -115,6 +117,15 @@ namespace eShopCoreWeb.BackendApi.Controllers
         public async Task<IActionResult> GetImageById(int productId, int imageId)
         {
             var productImage = await _manageProductService.GetImageById(imageId);
+            if (productImage == null)
+                return BadRequest("Cannot find image");
+            return Ok(productImage);
+        }
+        //http://localhost:port/product/1
+        [HttpGet("{productId}/listimage/")]
+        public async Task<IActionResult> GetListImage(int productId)
+        {
+            var productImage = await _manageProductService.GetListImage(productId);
             if (productImage == null)
                 return BadRequest("Cannot find image");
             return Ok(productImage);
