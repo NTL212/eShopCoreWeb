@@ -1,0 +1,145 @@
+﻿
+@using eShopCoreWeb.ViewModels.Common;
+@model PagedResult<eShopCoreWeb.ViewModels.Catalog.Products.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Danh sách sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{    
+    // define format VND
+    var format = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+
+}
+@section Scripts{
+    <script>
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}
+<div class="container-fluid">
+        <h1>Danh sách sản phẩm</h1>
+    <!-- DataTales Example -->
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Danh sách sản phẩm</li>
+    </ol>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"><a class="btn btn-success" asp-controller="Product" asp-action="Create">Tạo mới sản phẩm </a></h6>
+            <p></p>
+            <form asp-action="Index" method="get" class="d-none d-sm-inline-block form-inline mr-auto mw-100 navbar-search">
+                <input type="text" name="keyword" class="form-control" />
+                <button class="btn btn-primary" type="submit"><i class="fas fa-search fa-sm"></i> Tìm kiếm</button>
+                 <div class="col-md-4 d-inline">
+                                <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
+                                    <option>--Chọn danh mục--</option>
+                                </select>
+                            </div>
+            </form>
+        </div>
+        <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                     @if (ViewBag.ResultMsg != null && ViewBag.ResultMsg.Contains("thành công"))
+                    {
+                        <div class="alert alert-success" role="alert">
+                            @ViewBag.ResultMsg
+                        </div>
+                    }
+                    @if (ViewBag.ResultMsg != null && ViewBag.ResultMsg.Contains("thất bại"))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ViewBag.ResultMsg
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Id
+                                </th>
+                                <th>
+                                    Giá
+                                </th>
+                                <th>
+                                    Giá gốc
+                                </th>
+                                <th>
+                                    Số lượng
+                                </th>
+                                <th>
+                                    Lượt xem
+                                </th>
+                                <th>
+                                    Ngày tạo
+                                </th>
+                                <th>
+                                    Tên
+                                </th>
+                                <th>
+                                    Mô tả
+                                </th>
+                                <th>
+                                    Chi tiết
+                                </th>
+                                <th>
+                                    Thao tác
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id) 
+                                    </td>
+                                    <td>
+                                        @String.Format(format, "{0:c0}", @item.Price )
+                                    </td>
+                                    <td>
+                                       @String.Format(format, "{0:c0}", @item.OriginalPrice )
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Stock)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ViewCount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateCreated)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Description)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Details)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Sửa", "Edit","Product", new { id = item.Id}) |
+                                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Id, languageId=item.LanguageId }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })  |
+                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { id = item.Id,languageId="vi" })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+            </div>
+            @await Component.InvokeAsync("Pager", Model)
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+<!-- End of Main Content -->
