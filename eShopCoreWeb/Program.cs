@@ -10,11 +10,13 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Configuration;
 using eShopCoreWeb.Data.EF;
 using Microsoft.EntityFrameworkCore;
+using eShopCoreWeb.Application.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IStorageService, FileStorageService>();
 builder.Services.AddTransient<IManageProductService, ManageProductService>();
 IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())

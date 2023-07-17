@@ -14,11 +14,6 @@ namespace eShopCoreWeb.AdminApp.Controllers
         private readonly IProductApiClient _productApiClient;
         private readonly ICategoryApiClient _categoryApiClient;
         private readonly IConfiguration _configuration;
-        [AllowAnonymous]
-        public IActionResult Forbidden()
-        {
-            return View();
-        }
         public ProductController(IProductApiClient productApiClient, IConfiguration configuration, ICategoryApiClient categoryApiClient)
         {
             _productApiClient = productApiClient;
@@ -97,7 +92,8 @@ namespace eShopCoreWeb.AdminApp.Controllers
                     LanguageId = languageId,
                     Id = id,
                 };
-                ViewBag.Image = listImage.FirstOrDefault().ImagePath;
+                if(listImage!=null)
+                    ViewBag.Image = listImage.FirstOrDefault().ImagePath;
                 return View(updateRequest);
             }
             return RedirectToAction("Error", "Home");
