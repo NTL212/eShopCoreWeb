@@ -14,5 +14,6 @@ namespace eShopCoreWeb.AdminApp.Services
         Task<bool> DeleteProduct(int id);
         Task<ProductViewModel> GetProductById(int id, string languageId);
         Task<List<ProductImageViewModel>> GetListImage(int productId);
+        Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
     }
 }

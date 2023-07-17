@@ -3,8 +3,13 @@
 @model PagedResult<eShopCoreWeb.ViewModels.Catalog.Products.ProductViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{    
+    // define format VND
+    var format = System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+
 }
 @section Scripts{
     <script>
@@ -14,19 +19,25 @@
     </script>
 }
 <div class="container-fluid">
-    <h1>Danh sách san pham</h1>
+        <h1>Danh sách sản phẩm</h1>
     <!-- DataTales Example -->
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
-        <li class="breadcrumb-item active">Danh sách san pham</li>
+        <li class="breadcrumb-item active">Danh sách sản phẩm</li>
     </ol>
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary"><a class="btn btn-success" asp-controller="Product" asp-action="Create">Tạo mới san pham </a></h6>
+            <h6 class="m-0 font-weight-bold text-primary"><a class="btn btn-success" asp-controller="Product" asp-action="Create">Tạo mới sản phẩm </a></h6>
+            <p></p>
             <form asp-action="Index" method="get" class="d-none d-sm-inline-block form-inline mr-auto mw-100 navbar-search">
                 <input type="text" name="keyword" class="form-control" />
                 <button class="btn btn-primary" type="submit"><i class="fas fa-search fa-sm"></i> Tìm kiếm</button>
+                 <div class="col-md-4 d-inline">
+                                <select name="categoryId" onchange="this.form.submit()" asp-items="@ViewBag.Categories" class="form-control">
+                                    <option>--Chọn danh mục--</option>
+                                </select>
+                            </div>
             </form>
         </div>
         <div class="card-body">
@@ -54,42 +65,32 @@
                                     Id
                                 </th>
                                 <th>
-                                    Gia
+                                    Giá
                                 </th>
                                 <th>
-                                    Gia goc
+                                    Giá gốc
                                 </th>
                                 <th>
-                                    Ton kho
+                                    Số lượng
                                 </th>
                                 <th>
-                                    Luot xem
+                                    Lượt xem
                                 </th>
                                 <th>
-                                    Ngay tao
+                                    Ngày tạo
                                 </th>
                                 <th>
-                                    Ten
+                                    Tên
                                 </th>
                                 <th>
-                                    Mo ta
+                                    Mô tả
                                 </th>
                                 <th>
-                                    Chi tiet
+                                    Chi tiết
                                 </th>
                                 <th>
-                                    Mo ta seo
+                                    Thao tác
                                 </th>
-                                <th>
-                                    Tieu de seo
-                                </th>
-                                <th>
-                                    Alias seo
-                                </th>
-                                <th>
-                                    Ngon ngu
-                                </th>
-                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -97,13 +98,13 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Id)
+                                        @Html.DisplayFor(modelItem => item.Id) 
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Price)
+                                        @String.Format(format, "{0:c0}", @item.Price )
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                       @String.Format(format, "{0:c0}", @item.OriginalPrice )
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Stock)
@@ -124,21 +125,10 @@
                                         @Html.DisplayFor(modelItem => item.Details)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.SeoDescription)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.SeoTitle)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.SeoAlias)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.LanguageId)
-                                    </td>
-                                    <td>
-                                        @Html.ActionLink("Edit", "Edit","Product", new { id = item.Id}) |
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id, languageId=item.LanguageId }) |
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                        @Html.ActionLink("Sửa", "Edit","Product", new { id = item.Id}) |
+                                    @Html.ActionLink("Chi tiết", "Details", new { id = item.Id, languageId=item.LanguageId }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })
+                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { id = item.Id,languageId="vi" })
                                     </td>
                                 </tr>
                             }

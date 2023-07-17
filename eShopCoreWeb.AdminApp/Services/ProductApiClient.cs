@@ -96,7 +96,7 @@ namespace eShopCoreWeb.AdminApp.Services
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.BearerToken);
             var response = await client.GetAsync($"/api/products/paging?pageIndex=" +
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}&bearerToken=" +
-                $"{request.BearerToken}&languageId={request.LanguageId}");
+                $"{request.BearerToken}&languageId={request.LanguageId}&CategoryId={request.CategoryId}");
             var body = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<PagedResult<ProductViewModel>>(body);
         }
@@ -131,6 +131,24 @@ namespace eShopCoreWeb.AdminApp.Services
             requestContent.Add(new StringContent(request.LanguageId.ToString()), "languageId");
             var response = await client.PutAsync($"/api/products", requestContent);
             return response.IsSuccessStatusCode;
+        }
+        public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+        {
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"/api/products/{id}/categories", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
     }
 }
