@@ -1,4 +1,4 @@
-rASP.NET Core 6.0 project references TEDU
+ASP.NET Core 6.0 project references TEDU
 Technologies
 ASP.NET Core 6.0
 Entity Framework Core 6.0
