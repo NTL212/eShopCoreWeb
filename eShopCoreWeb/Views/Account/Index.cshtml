@@ -1,0 +1,63 @@
+﻿
+@using eShopCoreWeb.ViewModels.System.Users
+@model LoginRequest
+@{
+    ViewData["Title"] = "Đăng nhập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div id="mainBody">
+	<div class="container">
+		<div class="row">
+			<div class="span9">
+				<ul class="breadcrumb">
+					<li><a href="index.html">Home</a> <span class="divider">/</span></li>
+					<li class="active">Login</li>
+				</ul>
+				<h3> Login</h3>
+				<hr class="soft" />
+
+				<div class="row" style="">
+					<div class="text-center">
+					<div class="span4">
+						<div class="well">
+							<h5>Chào mừng</h5>
+							<form asp-action="Index">
+								<div asp-validation-summary="All" class="text-danger"></div>
+								<div class="form-group">
+									<input type="text" class="form-control form-control-user"
+										   asp-for="UserName"
+										   placeholder="Enter Username...">
+								</div>
+								<div class="form-group">
+									<input type="password" class="form-control form-control-user"
+										   asp-for="Password" placeholder="Password">
+								</div>
+								<div class="form-group">
+									<div class="custom-control custom-checkbox small">
+										<input type="checkbox" class="custom-control-input" asp-for="RememberMe">
+										<label class="custom-control-label " asp-for="RememberMe">
+											Remember
+											Me
+										</label>
+									</div>
+								</div>
+								<button type="submit" class="btn btn-primary btn-user btn-block">
+									Đăng nhập
+								</button>
+								<hr>
+								<a href="index.html" class="btn btn-google btn-user btn-block">
+									<i class="fab fa-google fa-fw"></i> Đăng nhập bằng Google
+								</a>
+								<a href="index.html" class="btn btn-facebook btn-user btn-block">
+									<i class="fab fa-facebook-f fa-fw"></i> Đăng nhập bằng Facebook
+								</a>
+							</form>
+						</div>
+					</div>
+				</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

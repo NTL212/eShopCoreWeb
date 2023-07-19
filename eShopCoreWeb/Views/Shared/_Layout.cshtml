@@ -1,5 +1,7 @@
 ﻿
-
+@using Microsoft.AspNetCore.Http;
+@using eShopCoreWeb.ViewModels.Catalog.Categories;
+@using Newtonsoft.Json;
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,7 +38,8 @@
     <div id="header">
         <div class="container">
             <div id="welcomeLine" class="row">
-                <div class="span6">Welcome!<strong> User</strong></div>
+                <div class="span6" style="font-size:20px">Welcome!   <span></span><strong>@User.Identity.Name</strong></div>
+     
                 <div class="span6">
                     <div class="pull-right">
                         <language-nav language-label="NativeName"
@@ -59,51 +62,57 @@
                     <span class="icon-bar"></span>
                 </a>
                 <div class="navbar-inner">
-                    <a class="brand" href="index.html"><img src="/themes/images/logo.png" alt="Bootsshop" /></a>
-                    <form class="form-inline navbar-search" method="post" action="products.html">
-                        <input id="srchFld" class="srchTxt" type="text" />
-                        <select class="srchTxt">
-                            <option>All</option>
-                            <option>CLOTHES </option>
-                            <option>FOOD AND BEVERAGES </option>
-                            <option>HEALTH & BEAUTY </option>
-                            <option>SPORTS & LEISURE </option>
-                            <option>BOOKS & ENTERTAINMENTS </option>
+                    <a class="brand" href="@Url.Action("Index","Home")"><img src="/themes/images/logo.png" alt="Bootsshop" /></a>
+                    @{
+                        var serializedObject = ViewContext.HttpContext.Session.GetString("categories");
+                        var categories = new List<CategoryViewModel>();
+                        if (serializedObject != null)
+                        {
+                            categories = JsonConvert.DeserializeObject<List<CategoryViewModel>>(serializedObject);
+                        }
+                        serializedObject = ViewContext.HttpContext.Session.GetString("parentCategories");
+                        var parentCategories = new List<CategoryParentViewModel>();
+                        if (serializedObject != null)
+                        {
+                            parentCategories = JsonConvert.DeserializeObject<List<CategoryParentViewModel>>(serializedObject);
+                        }
+                    }
+                    <form class="form-inline navbar-search" method="get" asp-action="Index"asp-controller="Product">
+                        <input type="text" name="keyword" class="srchTxt" />
+                        <select id="categoryId" name="categoryId" class="srchTxt">
+                            @foreach(var category in categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
                         </select>
-                        <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-search fa-sm"></i> Tìm kiếm</button>
                     </form>
                     <ul id="topMenu" class="nav pull-right">
-                        <li class=""><a >Specials Offer</a></li>
-                        <li class=""><a  >Delivery</a></li>
+                        <li class=""><a href="@Url.Action("Index","Product")"  >Shop</a></li>
                         <li class=""><a  >Contact</a></li>
-                        <li class="">
-                            <a href="#login" role="button" data-toggle="modal" style="padding-right:0">
-                                <span class="btn btn-large btn-success"><localize>Login</localize></span>
-                            </a>
-                            <div id="login" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="false">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                    <h3>Login Block</h3>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="form-horizontal loginFrm">
-                                        <div class="control-group">
-                                            <input type="text" id="inputEmail" placeholder="Email">
-                                        </div>
-                                        <div class="control-group">
-                                            <input type="password" id="inputPassword" placeholder="Password">
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="checkbox">
-                                                <input type="checkbox"> Remember me
-                                            </label>
-                                        </div>
-                                    </form>
-                                    <button type="submit" class="btn btn-success">Sign in</button>
-                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                                </div>
-                            </div>
-                        </li>
+
+                        @if(User.Identity.Name!=null)
+                        {
+                            <li class="">
+                                <a href="@Url.Action("Logout","Account")" role="button" data-toggle="modal" style="padding-right:0">
+                                    <span class="btn btn-large btn-warning"><localize>Logout</localize></span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="">
+                                <a href="@Url.Action("Index","Account")" role="button" data-toggle="modal" style="padding-right:0">
+                                    <span class="btn btn-large btn-success"><localize>Login</localize></span>
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="@Url.Action("Register","Account")" role="button" data-toggle="modal" style="padding-right:0">
+                                    <span class="btn btn-large btn-warning"><localize>Register</localize></span>
+                                </a>
+                            </li>
+                        }
+                        }
                     </ul>
                 </div>
             </div>
@@ -118,43 +127,19 @@
                 <div id="sidebar" class="span3">
                     <div class="well well-small"><a id="myCart" href="product_summary.html"><img src="/themes/images/ico-cart.png" alt="cart">3 Items in your cart  <span class="badge badge-warning pull-right">$155.00</span></a></div>
                     <ul id="sideManu" class="nav nav-tabs nav-stacked">
-                        <li class="subMenu open">
-                            <a> ELECTRONICS [230]</a>
-                            <ul>
-                                <li><a class="active" href="products.html"><i class="icon-chevron-right"></i>Cameras (100) </a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Computers, Tablets & laptop (30)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Mobile Phone (80)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Sound & Vision (15)</a></li>
-                            </ul>
-                        </li>
-                        <li class="subMenu">
-                            <a> CLOTHES [840] </a>
-                            <ul style="display:none">
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Women's Clothing (45)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Women's Shoes (8)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Women's Hand Bags (5)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Men's Clothings  (45)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Men's Shoes (6)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Kids Clothing (5)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Kids Shoes (3)</a></li>
-                            </ul>
-                        </li>
-                        <li class="subMenu">
-                            <a>FOOD AND BEVERAGES [1000]</a>
-                            <ul style="display:none">
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Angoves  (35)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Bouchard Aine & Fils (8)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>French Rabbit (5)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Louis Bernard  (45)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>BIB Wine (Bag in Box) (8)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Other Liquors & Wine (5)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Garden (3)</a></li>
-                                <li><a href="products.html"><i class="icon-chevron-right"></i>Khao Shong (11)</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="products.html">HEALTH & BEAUTY [18]</a></li>
-                        <li><a href="products.html">SPORTS & LEISURE [58]</a></li>
-                        <li><a href="products.html">BOOKS & ENTERTAINMENTS [14]</a></li>
+                        @foreach (var parentCategory in parentCategories)
+                                {
+                            <li class="subMenu">
+                                <a href="@Url.Action("Index", "Product", new{categoryId = parentCategory.Id})">@parentCategory.Name</a>
+                                <ul style="display:none">
+                                    @foreach (var category in parentCategory.ChildCategories)
+                                    {
+                                        <li><a href="@Url.Action("Index", "Product", new{categoryId = category.Id})"><i class="icon-chevron-right"></i>@category.Name</a></li>
+                                    }
+               
+                                </ul>
+                            </li>
+                                }
                     </ul>
                     <br />
                     <div class="thumbnail">

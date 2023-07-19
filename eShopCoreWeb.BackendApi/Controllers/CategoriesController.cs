@@ -23,6 +23,16 @@ namespace eShopCoreWeb.BackendApi.Controllers
             var categories = await _categoryService.GetAll(languageId);
             return Ok(categories);
         }
+        [HttpGet("parents")]
+        public async Task<IActionResult> GetAllParentCategories(string languageId)
+        {
+            var parentCategories = await _categoryService.GetAllParentCategories(languageId);
+            foreach(var category in parentCategories)
+            {
+                category.ChildCategories = await _categoryService.GetAllChildCategories(category.Id, languageId);
+            }
+            return Ok(parentCategories);
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CategoryCreateRequest request)
         {

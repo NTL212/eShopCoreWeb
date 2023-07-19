@@ -98,7 +98,7 @@ namespace eShopCoreWeb.ApiIntegration
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", request.BearerToken);
             var response = await client.GetAsync($"/api/products/paging?pageIndex=" +
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}&bearerToken=" +
-                $"{request.BearerToken}&languageId={request.LanguageId}&CategoryId={request.CategoryId}");
+                $"{request.BearerToken}&languageId={request.LanguageId}&CategoryId={request.CategoryId}&sort={request.Sort}");
             var body = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<PagedResult<ProductViewModel>>(body);
         }

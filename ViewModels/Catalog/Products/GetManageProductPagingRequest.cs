@@ -8,6 +8,7 @@ namespace eShopCoreWeb.ViewModels.Catalog.Products
 {
     public class GetManageProductPagingRequest:PagingRequestBase
     {
+        public int? Sort { get; set; }
         public string? Keyword { get; set; }
         public string LanguageId { get; set; }
         public int? CategoryId { get; set; }

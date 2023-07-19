@@ -151,6 +151,25 @@ namespace eShopCoreWeb.Application.Catalog.Products
             {
                 query = query.Where(p => p.pic.CategoryId == request.CategoryId);
             }
+            switch(request.Sort)
+            {
+                //Sap xep theo name tu A den Z
+                case 0:
+                    query = query.OrderBy(x=>x.pt.Name);
+                    break;
+                //Sap xep theo thu tu tu Z den A
+                case 1:
+                    query = query.OrderByDescending(x => x.pt.Name);
+                    break;
+                //Sắp xếp theo thứ tự giảm dần số lượng trong kho
+                case 2:
+                    query = query.OrderByDescending(x => x.p.Stock);
+                    break;
+                //Sắp xếp theo thứ tự giảm dần giá cá
+                case 3:
+                    query = query.OrderByDescending(x => x.p.Price);
+                    break;
+            }    
             //3. Paging
             int totalRow = await query.CountAsync();
 
@@ -191,6 +210,7 @@ namespace eShopCoreWeb.Application.Catalog.Products
             var product = await _context.Products.FindAsync(productId);
             var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
             && x.LanguageId == languageId);
+            var productImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.Caption.Contains("Thumbnail image") && x.ProductId.Equals(productId));
             var categories = await (from c in _context.Categories
                                     join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
                                     join pic in _context.ProductInCategories on c.Id equals pic.CategoryId
@@ -211,7 +231,8 @@ namespace eShopCoreWeb.Application.Catalog.Products
                 SeoTitle = productTranslation != null ? productTranslation.SeoTitle : null,
                 Stock = product.Stock,
                 ViewCount = product.ViewCount,
-                Categories = categories
+                Categories = categories,
+                ThumnailImage = productImage.ImagePath
             };
             return productViewModel;
         }

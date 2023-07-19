@@ -1,32 +1,74 @@
 ﻿using eShopCoreWeb.Application.Catalog.Products;
 using eShopCoreWeb.Data.EF;
+using eShopCoreWeb.Data.Entities;
+using eShopCoreWeb.ViewModels.Catalog.Products;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using System.Drawing.Printing;
+using eShopCoreWeb.ApiIntegration;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.RegularExpressions;
 
 namespace eShopCoreWeb.Controllers
 {
-    [Route("cua-hang")]
     public class ProductController : Controller
     {
-        private readonly IManageProductService _manageProductService;
-        public ProductController(IManageProductService productService)
+        private readonly IProductApiClient _productApiClient;
+        private readonly ICategoryApiClient _categoryApiClient;
+        private readonly IConfiguration _configuration;
+        public ProductController(IProductApiClient productApiClient, IConfiguration configuration, ICategoryApiClient categoryApiClient)
         {
-            _manageProductService = productService;
+            _productApiClient = productApiClient;
+            _configuration = configuration;
+            _categoryApiClient = categoryApiClient;
         }
-        [Route("san-pham")]
+        [HttpGet]
         // GET: ProductsController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? categoryId, int? sort, string keyword = "default", int pageIndex = 1, int pageSize = 2, string languageId = "vi")
         {
 
-            var products = await _manageProductService.GetAll("vi");
-            return View(products);
+
+            // Lấy token từ Session
+            var sessions = HttpContext.Session.GetString("Token");
+
+            // Tạo request để lấy danh sách sản phẩm theo trang và từ khóa tìm kiếm
+            var request = new GetManageProductPagingRequest()
+            {
+                BearerToken = sessions,
+                Keyword = keyword,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                LanguageId = languageId,
+                CategoryId = categoryId,
+                Sort =sort
+            };
+
+            // Gọi API để lấy danh sách sản phẩm
+            var data = await _productApiClient.GetProductPaging(request);
+            var categories = await _categoryApiClient.GetAll(languageId);
+            ViewBag.Categories = categories.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString(),
+                Selected = categoryId.HasValue && categoryId.Value == x.Id
+            });
+            if (data == null)
+                return BadRequest("Không tìm được");
+            ViewBag.ResultMsg = TempData["result"];
+            return View(data);
         }
 
         // GET: ProductsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Detail(int id)
         {
-            return View();
+            var product = await _productApiClient.GetProductById(id, "vi");
+            var productImages = await _productApiClient.GetListImage(id);
+            return View(new WebApp.Models.ProductDetailViewModel()
+            {
+                Product = product,
+                ProductImages = productImages
+            });
         }
 
         // GET: ProductsController/Create
