@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.19" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
@@ -21,9 +22,11 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="wwwroot\themes\less\oregional\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\eShopCoreWeb.ApiIntegration\eShopCoreWeb.ApiIntegration.csproj" />
     <ProjectReference Include="..\eShopCoreWeb.Application\eShopCoreWeb.Application.csproj" />
     <ProjectReference Include="..\Test\eShopCoreWeb.Data.csproj" />
   </ItemGroup>

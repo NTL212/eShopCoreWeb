@@ -52,6 +52,20 @@ namespace eShopCoreWeb.BackendApi.Controllers
                 return BadRequest("Cannot find product");
             return Ok(product);
         }
+        [HttpGet("featured/{take}/{languageId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetFeaturedProducts(int take, string languageId)
+        {
+            var products = await _manageProductService.GetFeaturedProduct(take, languageId);
+            return Ok(products);
+        }
+        [HttpGet("lastest/{take}/{languageId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetLastestProduct(int take, string languageId)
+        {
+            var products = await _manageProductService.GetLastestProduct(take, languageId);
+            return Ok(products);
+        }
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> Create([FromForm]ProductCreateRequest request)
@@ -114,8 +128,8 @@ namespace eShopCoreWeb.BackendApi.Controllers
             return Ok();
         }
         //http://localhost:port/product/1
-        [HttpGet("{productId}/image/{imageId}")]
-        public async Task<IActionResult> GetImageById(int productId, int imageId)
+        [HttpGet("image/{imageId}")]
+        public async Task<IActionResult> GetImageById(int imageId)
         {
             var productImage = await _manageProductService.GetImageById(imageId);
             if (productImage == null)
@@ -134,6 +148,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
 
         //Images
         [HttpPost("{productId}/images")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddImages(int productId, [FromForm] ProductImageCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -147,7 +162,8 @@ namespace eShopCoreWeb.BackendApi.Controllers
             return CreatedAtAction(nameof(GetImageById), new { id = imageId }, productImage);
         }
 
-        [HttpPut("{productId}/images/{imageId}")]
+        [HttpPut("images/{imageId}")]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateImage(int imageId, [FromForm] ProductImageUpdateRequest request)
         {
             if (!ModelState.IsValid)
@@ -159,7 +175,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
                 return BadRequest();
             return Ok();
         }
-        [HttpDelete("{productId}/images/{imageId}")]
+        [HttpDelete("images/{imageId}")]
         public async Task<IActionResult> DeleteImage(int imageId)
         {
             if (!ModelState.IsValid)

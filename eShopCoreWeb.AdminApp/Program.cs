@@ -1,9 +1,10 @@
-using eShopCoreWeb.AdminApp.Services;
+
 using eShopCoreWeb.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using eShopCoreWeb.ApiIntegration;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,5 @@
-﻿using eShopCoreWeb.AdminApp.Services;
+﻿
+using eShopCoreWeb.ApiIntegration;
 using eShopCoreWeb.ViewModels.Catalog.Categories;
 using eShopCoreWeb.ViewModels.Catalog.Products;
 using Microsoft.AspNetCore.Authorization;
