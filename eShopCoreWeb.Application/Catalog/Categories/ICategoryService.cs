@@ -12,6 +12,8 @@ namespace eShopCoreWeb.Application.Catalog.Categories
     public interface ICategoryService
     {
         Task<List<CategoryViewModel>> GetAll(string languageId);
+        Task<List<CategoryViewModel>> GetAllChildCategories(int parentId, string languageId);
+        Task<List<CategoryParentViewModel>> GetAllParentCategories(string languageId);    
         Task<int> Create(CategoryCreateRequest request);
 
         Task<int> Update(CategoryUpdateRequest request);

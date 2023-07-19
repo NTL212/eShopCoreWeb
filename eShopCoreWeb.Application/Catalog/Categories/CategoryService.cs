@@ -125,5 +125,48 @@ namespace eShopCoreWeb.Application.Catalog.Categories
             return categoryViewModel;
         }
 
+        public async  Task<List<CategoryViewModel>> GetAllChildCategories(int parentId, string languageId)
+        {
+             var query = from c in _context.Categories
+                        join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
+                        where ct.LanguageId == languageId
+                        select new { c, ct };
+            return await query.Where(x=>x.c.ParentId==parentId).Select(x => new CategoryViewModel()
+            {
+                Id = x.c.Id,
+                Name = x.ct.Name,
+                IsShowOnHome = x.c.IsShowOnHome,
+                ParentId = x.c.ParentId,
+                SortOrder = x.c.SortOrder,
+                SeoAlias = x.ct.SeoAlias,
+                SeoDescription = x.ct.SeoDescription,
+                SeoTitle = x.ct.SeoTitle,
+                LanguageId = languageId,
+                Status = x.c.Status.Equals(Data.Enums.Status.Active) ? true : false
+        }).ToListAsync();
+        }
+
+        public async Task<List<CategoryParentViewModel>> GetAllParentCategories(string languageId)
+        {
+            var query = from c in _context.Categories
+                        join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
+                        where ct.LanguageId == languageId
+                        select new { c, ct };
+            var data = await query.Where(x => x.c.ParentId==0).Select(x => new CategoryParentViewModel()
+            {
+                Id = x.c.Id,
+                Name = x.ct.Name,
+                IsShowOnHome = x.c.IsShowOnHome,
+                SortOrder = x.c.SortOrder,
+                SeoAlias = x.ct.SeoAlias,
+                SeoDescription = x.ct.SeoDescription,
+                SeoTitle = x.ct.SeoTitle,
+                LanguageId = languageId,
+                Status = x.c.Status.Equals(Data.Enums.Status.Active) ? true : false
+            }).ToListAsync();
+
+            int totalRow = await query.CountAsync();
+            return data;
+        }
     }
 }

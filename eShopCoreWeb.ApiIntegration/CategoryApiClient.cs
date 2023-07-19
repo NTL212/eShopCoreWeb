@@ -82,5 +82,17 @@ namespace eShopCoreWeb.ApiIntegration
 
             return JsonConvert.DeserializeObject<CategoryViewModel>(body);
         }
+
+        public async Task<List<CategoryParentViewModel>> GetAllParentCategories(string languageId)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var response = await client.GetAsync($"/api/categories/parents?languageId={languageId}");
+
+            var body = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<CategoryParentViewModel>>(body);
+        }
     }
 }

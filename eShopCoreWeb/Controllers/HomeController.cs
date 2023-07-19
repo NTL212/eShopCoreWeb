@@ -1,9 +1,11 @@
 ﻿using eShopCoreWeb.ApiIntegration;
 using eShopCoreWeb.Application.Catalog.Products;
+using eShopCoreWeb.Data.Entities;
 using eShopCoreWeb.Utilities.Constants;
 using eShopCoreWeb.WebApp.Models;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace eShopCoreWeb.Controllers
@@ -13,11 +15,13 @@ namespace eShopCoreWeb.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ISlideApiClient _slideApiClient;
         private readonly IProductApiClient _productApiClient;
-        public HomeController(ILogger<HomeController> logger, ISlideApiClient slideApiClient, IProductApiClient productApiClient)
+        private readonly ICategoryApiClient _categoryApiClient;
+        public HomeController(ILogger<HomeController> logger, ISlideApiClient slideApiClient, IProductApiClient productApiClient, ICategoryApiClient categoryApiClient)
         {
             _logger = logger;
             _slideApiClient = slideApiClient;
             _productApiClient = productApiClient;
+            _categoryApiClient = categoryApiClient;
         }
 
         public async Task<IActionResult> Index()
@@ -28,6 +32,14 @@ namespace eShopCoreWeb.Controllers
                 FeaturedProducts =await _productApiClient.GetLastestProduct(SystemConstants.ProductSettings.NumberOfFeaturedProduct,"vi"),
                 LastestProduct = await _productApiClient.GetLastestProduct(SystemConstants.ProductSettings.NumberOfFeaturedProduct, "vi")
             };
+            var categories = await _categoryApiClient.GetAll("vi");
+            categories = categories.FindAll(x=>x.ParentId!=0);
+            var serializedObject = JsonConvert.SerializeObject(categories);
+            HttpContext.Session.SetString("categories", serializedObject);
+
+            var parentCategories = await _categoryApiClient.GetAllParentCategories("vi");
+            serializedObject = JsonConvert.SerializeObject(parentCategories);
+            HttpContext.Session.SetString("parentCategories", serializedObject);
             return View(viewModel);
         }
 

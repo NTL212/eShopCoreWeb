@@ -12,11 +12,18 @@ using eShopCoreWeb.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using eShopCoreWeb.Application.Common;
 using eShopCoreWeb.ApiIntegration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpClient();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Index/";
+                    options.AccessDeniedPath = "/Users/Forbidden/";
+                });
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddSession(options =>
@@ -27,7 +34,10 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IStorageService, FileStorageService>();
 builder.Services.AddTransient<IManageProductService, ManageProductService>();
 builder.Services.AddTransient<ISlideApiClient, SlideApiClient>();
+builder.Services.AddTransient<IUserApiClient, UserApiClient>();
+builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
 builder.Services.AddTransient<IProductApiClient, ProductApiClient>();
+builder.Services.AddTransient<ICategoryApiClient, CategoryApiClient>();
 IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
