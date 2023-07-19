@@ -1,4 +1,6 @@
-﻿using eShopCoreWeb.AdminApp.Services;
+﻿
+using eShopCoreWeb.ApiIntegration;
+using eShopCoreWeb.ViewModels.Catalog.ProductImages;
 using eShopCoreWeb.ViewModels.Catalog.Products;
 using eShopCoreWeb.ViewModels.Common;
 using eShopCoreWeb.ViewModels.System.Users;
@@ -21,7 +23,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
             _categoryApiClient = categoryApiClient;
         }
         [HttpGet]
-        public async Task<IActionResult> Index(int? categoryId,string keyword = "default", int pageIndex = 1, int pageSize = 1, string languageId="vi")
+        public async Task<IActionResult> Index(int? categoryId,string keyword = "default", int pageIndex = 1, int pageSize = 2, string languageId="vi")
         {
             // Lấy token từ Session
             var sessions = HttpContext.Session.GetString("Token");
@@ -125,7 +127,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            // Gọi API để lấy thông tin sản phẩm theo ID và ngôn ngữ
+            // Gọi API để xóa sản phẩm theo Id
             var result = await _productApiClient.DeleteProduct(id);
             if (result)
             {
@@ -180,6 +182,90 @@ namespace eShopCoreWeb.AdminApp.Controllers
                 });
             }
             return categoryAssignRequest;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddImages(int productId)
+        {
+            var productImages = await _productApiClient.GetListImage(productId);
+            ViewBag.ProductId = productId;
+            if (productImages != null)
+                ViewBag.Images = productImages;
+            ViewBag.ResultMsg = TempData["result"];
+            return View();
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddImages(int productId, ProductImageCreateRequest request)
+        {
+
+            if (!ModelState.IsValid)
+                return View();
+            // Gọi API để tạo sản phẩm
+            var result = await _productApiClient.AddImages(productId,request);
+            if (result)
+            {
+                TempData["result"] = "Thêm hình thành công";
+                return RedirectToAction("Index");
+            }
+            return View(request);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateImage(int imageId)
+        {
+            // Gọi API để lấy thông tin sản phẩm theo ID và ngôn ngữ
+            var image = await _productApiClient.GetImageById(imageId);
+            if (image != null)
+            {
+                var updateRequest = new ProductImageUpdateRequest()
+                {
+                   Id = image.Id,
+                   Caption = image.Caption,
+                   ImagePath = image.ImagePath,
+                   IsDefault = image.IsDefault,
+                   SortOrder = image.SortOrder
+                };
+                return View(updateRequest);
+            }
+
+            return RedirectToAction("Error", "Home");
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateImage(ProductImageUpdateRequest request)
+        {
+
+            if (!ModelState.IsValid)
+                return View();
+            // Gọi API để lay imgae
+            var image = await _productApiClient.GetImageById(request.Id);
+            // Gọi API để update imgae
+            var result = await _productApiClient.UpdateImage(request.Id, request);
+            if (result)
+            {
+                TempData["result"] = "Cập nhật hình ảnh thành công";
+                return RedirectToAction("AddImages", new {productId = image.ProductId});
+            }
+            TempData["result"] = "Cập nhật hình ảnh thất bại";
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> DeleteImage(int imageId)
+        {
+            // Gọi API để lay imgae
+            var image = await _productApiClient.GetImageById(imageId);
+            // Gọi API xóa ảnh theo Id
+            var result = await _productApiClient.DeleteImage(imageId);
+            if (result)
+            {
+                TempData["result"] = "Xóa ảnh thành công";
+            }
+            else
+            {
+                TempData["result"] = "Xóa ảnh thất bại";
+            }
+            return RedirectToAction("AddImages", new { productId = image.ProductId });
         }
     }
 }

@@ -40,5 +40,7 @@ namespace eShopCoreWeb.Application.Catalog.Products
 
         Task<List<ProductViewModel>> GetAll(string languageId);
         Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
+        Task<List<ProductViewModel>> GetLastestProduct(int take,string languageId);
+        Task<List<ProductViewModel>> GetFeaturedProduct(int take, string languageId);
     }
 }

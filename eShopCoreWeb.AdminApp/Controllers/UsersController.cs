@@ -1,4 +1,4 @@
-﻿using eShopCoreWeb.AdminApp.Services;
+﻿
 using eShopCoreWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
 using eShopCoreWeb.ViewModels.Common;
+using eShopCoreWeb.ApiIntegration;
 
 namespace eShopCoreWeb.AdminApp.Controllers
 {

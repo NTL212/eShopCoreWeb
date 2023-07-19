@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\eShopCoreWeb.ApiIntegration\eShopCoreWeb.ApiIntegration.csproj" />
     <ProjectReference Include="..\ViewModels\eShopCoreWeb.ViewModels.csproj" />
   </ItemGroup>
 

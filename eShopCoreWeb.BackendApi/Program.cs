@@ -2,6 +2,7 @@ using eShopCoreWeb.Application.Catalog.Categories;
 using eShopCoreWeb.Application.Catalog.Products;
 using eShopCoreWeb.Application.Common;
 using eShopCoreWeb.Application.System.Users;
+using eShopCoreWeb.Application.Utilities.Slides;
 using eShopCoreWeb.Data.EF;
 using eShopCoreWeb.Data.Entities;
 using eShopCoreWeb.ViewModels.System.Users;
@@ -34,9 +35,12 @@ builder.Services.AddTransient<IStorageService, FileStorageService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<ISlideService, SlideService>();
+
 builder.Services.AddTransient<UserManager<AppUser>,UserManager<AppUser>>();
 builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
 builder.Services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+
 
 builder.Services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();
 builder.Services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();

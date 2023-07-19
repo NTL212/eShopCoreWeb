@@ -62,7 +62,7 @@
                         <thead>
                             <tr>
                                 <th>
-                                    Id
+                                    Hình ảnh
                                 </th>
                                 <th>
                                     Giá
@@ -98,7 +98,7 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Id) 
+                                    <img style="width:100px;height:100px;" src=" @("https://localhost:44321/user-content/"+ item.ThumnailImage)" alt="@item.Name">
                                     </td>
                                     <td>
                                         @String.Format(format, "{0:c0}", @item.Price )
@@ -128,7 +128,8 @@
                                         @Html.ActionLink("Sửa", "Edit","Product", new { id = item.Id}) |
                                     @Html.ActionLink("Chi tiết", "Details", new { id = item.Id, languageId=item.LanguageId }) |
                                     @Html.ActionLink("Xóa", "Delete", new { id = item.Id })  |
-                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { id = item.Id,languageId="vi" })
+                                    @Html.ActionLink("Gán danh mục", "CategoryAssign", new { id = item.Id,languageId="vi" }) |
+                                    @Html.ActionLink("Thêm hình ảnh", "AddImages", new { productId = item.Id})
                                     </td>
                                 </tr>
                             }

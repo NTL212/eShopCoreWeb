@@ -1,0 +1,55 @@
+﻿
+@model eShopCoreWeb.ViewModels.Catalog.ProductImages.ProductImageUpdateRequest
+@{
+    ViewData["Title"] = "UpdateImage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1>Thêm hình ảnh cho sản phẩm</h1>
+    <!-- DataTales Example -->
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Thêm hình ảnh cho sản phẩm</li>
+    </ol>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"><a class="btn btn-success" asp-controller="Product" asp-action="Index">Danh sách </a></h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <form asp-action="UpdateImage" enctype="multipart/form-data" asp-controller="Product" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Caption" class="control-label"></label>
+                            <input asp-for="Id" type="hidden" class="form-control" value="@Model.Id" />
+                            <input asp-for="Caption" class="form-control" />
+                            <span asp-validation-for="Caption" class="text-danger"></span>
+                        </div>
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="IsDefault" /> @Html.DisplayNameFor(model => model.IsDefault)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SortOrder" class="control-label"></label>
+                            <input asp-for="SortOrder" class="form-control" />
+                            <span asp-validation-for="SortOrder" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label"></label>
+                            <input asp-for="ImageFile" type="file" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
