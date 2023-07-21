@@ -1,6 +1,7 @@
 ﻿using eShopCoreWeb.Application.Common;
 using eShopCoreWeb.Data.EF;
 using eShopCoreWeb.Data.Entities;
+using eShopCoreWeb.Utilities.Constants;
 using eShopCoreWeb.Utilities.Exceptions;
 using eShopCoreWeb.ViewModels.Catalog.ProductImages;
 using eShopCoreWeb.ViewModels.Catalog.Products;
@@ -67,6 +68,34 @@ namespace eShopCoreWeb.Application.Catalog.Products
      
         public async Task<int> Create(ProductCreateRequest request)
         {
+            var languages = _context.Languages;
+            var translations = new List<ProductTranslation>();
+            foreach (var language in languages)
+            {
+                if (language.Id == request.LanguageId)
+                {
+                    translations.Add(new ProductTranslation()
+                    {
+                        Name = request.Name,
+                        Description = request.Description,
+                        Details = request.Details,
+                        SeoDescription = request.SeoDescription,
+                        SeoAlias = request.SeoAlias,
+                        SeoTitle = request.SeoTitle,
+                        LanguageId = request.LanguageId
+                    });
+                }
+                else
+                {
+                    translations.Add(new ProductTranslation()
+                    {
+                        Name = SystemConstants.ProductConstants.NA,
+                        Description = SystemConstants.ProductConstants.NA,
+                        SeoAlias = SystemConstants.ProductConstants.NA,
+                        LanguageId = language.Id
+                    });
+                }
+            }
             var product = new Product()
             {
                 Price = request.Price,
@@ -74,19 +103,7 @@ namespace eShopCoreWeb.Application.Catalog.Products
                 Stock = request.Stock,
                 ViewCount = 0,
                 DateCreated = DateTime.Now,
-                ProductTranslations = new List<ProductTranslation>()
-                {
-                    new ProductTranslation()
-                    {
-                        Name =  request.Name,
-                        Description = request.Description,
-                        Details = request.Details,
-                        SeoDescription = request.SeoDescription,
-                        SeoAlias = request.SeoAlias,
-                        SeoTitle = request.SeoTitle,
-                        LanguageId = request.LanguageId
-                    }
-                }
+                ProductTranslations = translations
             };
             //Save image
             if (request.ThumbnailImage != null)
@@ -136,7 +153,7 @@ namespace eShopCoreWeb.Application.Catalog.Products
                         from pi in ppi.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                        where pt.LanguageId == request.LanguageId
+                        where pt.LanguageId == request.LanguageId && pi.IsDefault == true
                         select new { p, pt, pic,pi };
             //2. filter
             if (!string.IsNullOrEmpty(request.Keyword) && request.Keyword != "default" )

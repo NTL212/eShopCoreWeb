@@ -1,5 +1,6 @@
 ﻿
 @using eShopCoreWeb.ViewModels.Common;
+@using Microsoft.AspNetCore.Http;
 @model PagedResult<eShopCoreWeb.ViewModels.Catalog.Products.ProductViewModel>
 
 @{
@@ -18,7 +19,12 @@
 	<h3> Tất cả sản phẩm <small class="pull-right"> @Model.Items.Count products are available </small></h3>	
 	<hr class="soft"/>
 				<form class="form-horizontal span6" method="get" asp-action="Index" asp-controller="Product">
+					@{
+						// Lấy giá trị của tham số "categoryId" từ URL
+						string categoryId = ViewContext.HttpContext.Request.Query["categoryId"];
+					}
 		<div class="control-group">
+						<input type="hidden" name="categoryId" value="@categoryId" />
 		  <label class="control-label alignL">Sort By </label>
 			<select id="sort" name="sort" onchange="this.form.submit()">
 				<option>----------------Sort By----------------</option>
@@ -79,7 +85,9 @@
 				  <p> 
 					@item.Description
 				  </p>
-				   <h4 style="text-align:center"><a class="btn" href="@Url.Action("Detail","Product",new{id=item.Id})"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">@item.Price</a></h4>
+				   <h4 style="text-align:center"><a class="btn" href="@Url.Action("Detail","Product",new{id=item.Id})"> <i class="icon-zoom-in"></i></a> 
+					   <a class="btn btn-add-cart" data-id="@item.Id" href="#">Add to <i class="icon-shopping-cart"></i></a> 
+					   <a class="btn btn-primary" href="#">@item.Price</a></h4>
 				</div>
 			  </div>
 			</li>

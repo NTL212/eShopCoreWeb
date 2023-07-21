@@ -170,6 +170,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
         {
             var product = await _productApiClient.GetProductById(id, languageId);
             var categories = await _categoryApiClient.GetAll(languageId);
+            categories = categories.FindAll(x=>x.ParentId==0);
             var categoryAssignRequest = new CategoryAssignRequest();
             categoryAssignRequest.Id = product.Id;
             foreach (var category in categories)
@@ -178,6 +179,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
                 {
                     Id = category.Id.ToString(),
                     Name = category.Name,
+                    
                     Selected = product.Categories.Contains(category.Name)
                 });
             }

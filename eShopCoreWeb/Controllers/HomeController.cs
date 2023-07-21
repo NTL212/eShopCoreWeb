@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
-namespace eShopCoreWeb.Controllers
+namespace eShopCoreWeb.WebApp.Controllers
 {
     public class HomeController : Controller
     {
@@ -29,7 +29,7 @@ namespace eShopCoreWeb.Controllers
             var viewModel = new HomeViewModel()
             {
                 Slides = await _slideApiClient.GetAll(),
-                FeaturedProducts =await _productApiClient.GetLastestProduct(SystemConstants.ProductSettings.NumberOfFeaturedProduct,"vi"),
+                FeaturedProducts =await _productApiClient.GetLastestProduct(SystemConstants.ProductSettings.NumberOfLastestProduct,"vi"),
                 LastestProduct = await _productApiClient.GetLastestProduct(SystemConstants.ProductSettings.NumberOfFeaturedProduct, "vi")
             };
             var categories = await _categoryApiClient.GetAll("vi");

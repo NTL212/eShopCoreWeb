@@ -61,7 +61,13 @@ namespace eShopCoreWeb.WebApp.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         userPrincipal,
                         authProperties);
-
+            // Kiểm tra xem có TempData "ReturnUrl" hay không
+            if (TempData["ReturnUrl"] != null)
+            {
+                // Nếu có, redirect đến đường dẫn trong TempData "ReturnUrl"
+                var returnUrl = TempData["ReturnUrl"].ToString();
+                return Redirect(returnUrl);
+            }
             return RedirectToAction("Index", "Home");
         }
 

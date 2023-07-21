@@ -4,6 +4,7 @@ using eShopCoreWeb.ViewModels.Catalog.Products;
 using eShopCoreWeb.ViewModels.Common;
 using eShopCoreWeb.ViewModels.System.Roles;
 using eShopCoreWeb.ViewModels.System.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -90,7 +91,7 @@ namespace eShopCoreWeb.ApiIntegration
 
             return JsonConvert.DeserializeObject<ProductViewModel>(body);
         }
-
+        [AllowAnonymous]
         public async Task<PagedResult<ProductViewModel>> GetProductPaging(GetManageProductPagingRequest request)
         {
             var client = _httpClientFactor.CreateClient();

@@ -10,7 +10,7 @@ using eShopCoreWeb.ApiIntegration;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.RegularExpressions;
 
-namespace eShopCoreWeb.Controllers
+namespace eShopCoreWeb.WebApp.Controllers
 {
     public class ProductController : Controller
     {
