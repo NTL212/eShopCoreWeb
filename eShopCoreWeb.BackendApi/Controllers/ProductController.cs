@@ -105,18 +105,26 @@ namespace eShopCoreWeb.BackendApi.Controllers
             return Ok();
         }
 
-        [HttpPatch("price/{productId}/{newprice}")]
-        public async Task<IActionResult> UpdatePrice(int productId, decimal newprice)
+        [HttpPatch("price/{productId}")]
+        public async Task<IActionResult> UpdatePrice(int productId, [FromBody] decimal newprice)
         {
             var isSuccessful = await _manageProductService.UpdatePrice(productId, newprice);
             if (isSuccessful)
                 return Ok();
             return BadRequest();
         }
-        [HttpPatch("stock/{id}/{quantity}")]
-        public async Task<IActionResult> UpdateStock(int id, int quantity)
+        [HttpPatch("stock/{id}")]
+        public async Task<IActionResult> UpdateStock(int id, [FromBody] int quantity)
         {
             var isSuccessful = await _manageProductService.UpdateStock(id, quantity);
+            if (isSuccessful)
+                return Ok();
+            return BadRequest();
+        }
+        [HttpPatch("feature/{id}")]
+        public async Task<IActionResult> UpdateFeature(int id, [FromBody] bool isFeatured)
+        {
+            var isSuccessful = await _manageProductService.UpdateFeature(id, isFeatured);
             if (isSuccessful)
                 return Ok();
             return BadRequest();

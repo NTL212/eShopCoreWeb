@@ -207,7 +207,8 @@ namespace eShopCoreWeb.Application.Catalog.Products
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
                     ViewCount = x.p.ViewCount,
-                    ThumnailImage = x.pi.ImagePath
+                    ThumnailImage = x.pi.ImagePath,
+                    IsFeatured = x.p.IsFeatured
                 }).ToListAsync();
 
             //4. Select and projection
@@ -249,7 +250,8 @@ namespace eShopCoreWeb.Application.Catalog.Products
                 Stock = product.Stock,
                 ViewCount = product.ViewCount,
                 Categories = categories,
-                ThumnailImage = productImage.ImagePath
+                ThumnailImage = productImage.ImagePath,
+                IsFeatured = product.IsFeatured
             };
             return productViewModel;
         }
@@ -347,6 +349,7 @@ namespace eShopCoreWeb.Application.Catalog.Products
             var product = await _context.Products.FindAsync(productId);
             if (product == null) throw new EShopException($"Cannot find a product with id: {productId}");
             product.Price = newPrice;
+            _context.Products.Update(product);
             return await _context.SaveChangesAsync() > 0;
 
         }
@@ -355,7 +358,8 @@ namespace eShopCoreWeb.Application.Catalog.Products
         {
             var product = await _context.Products.FindAsync(productId);
             if (product == null) throw new EShopException($"Cannot find a product with id: {productId}");
-            product.Stock += addedQuantity;
+            product.Stock = addedQuantity;
+            _context.Products.Update(product);
             return await _context.SaveChangesAsync() > 0;
         }
 
@@ -539,6 +543,15 @@ namespace eShopCoreWeb.Application.Catalog.Products
                    ThumnailImage = x.pi.ImagePath
                }).ToListAsync();
             return data;
+        }
+
+        public async Task<bool> UpdateFeature(int productId, bool isFeatured)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null) throw new EShopException($"Cannot find a product with id: {productId}");
+            product.IsFeatured = isFeatured;
+            _context.Products.Update(product);
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

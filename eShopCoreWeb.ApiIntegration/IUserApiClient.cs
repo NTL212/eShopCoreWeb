@@ -11,6 +11,7 @@ namespace eShopCoreWeb.ApiIntegration
         Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
         Task<ApiResult<bool>> Delete(Guid id);
         Task<ApiResult<UserViewModel>> GetUserById(Guid id);
+        Task<ApiResult<UserViewModel>> GetUserByUserName(string username);
         Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request);
     }
 }

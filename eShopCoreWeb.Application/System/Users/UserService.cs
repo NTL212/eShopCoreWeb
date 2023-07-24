@@ -209,5 +209,27 @@ namespace eShopCoreWeb.Application.System.Users
 
             return new ApiSuccessResult<bool>();
         }
+
+        public async Task<ApiResult<UserViewModel>> GetByUserName(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+            {
+                return new ApiErrorResult<UserViewModel>("User khong ton tai");
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var userVm = new UserViewModel()
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                FirstName = user.FirstName,
+                Dob = user.Dob,
+                Id = user.Id,
+                LastName = user.LastName,
+                UserName = user.UserName,
+                Roles = roles
+            };
+            return new ApiSuccessResult<UserViewModel>(userVm);
+        }
     }
 }

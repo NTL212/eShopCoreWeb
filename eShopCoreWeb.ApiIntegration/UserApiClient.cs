@@ -127,5 +127,18 @@ namespace eShopCoreWeb.ApiIntegration
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 
+        public async Task<ApiResult<UserViewModel>> GetUserByUserName(string username)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var response = await client.GetAsync($"/api/users/getbyname/{username}");
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<UserViewModel>>(body);
+
+            return JsonConvert.DeserializeObject<ApiErrorResult<UserViewModel>>(body);
+        }
     }
 }

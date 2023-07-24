@@ -1,4 +1,5 @@
 using eShopCoreWeb.Application.Catalog.Categories;
+using eShopCoreWeb.Application.Catalog.Orders;
 using eShopCoreWeb.Application.Catalog.Products;
 using eShopCoreWeb.Application.Common;
 using eShopCoreWeb.Application.System.Users;
@@ -36,6 +37,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<ISlideService, SlideService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 
 builder.Services.AddTransient<UserManager<AppUser>,UserManager<AppUser>>();
 builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();

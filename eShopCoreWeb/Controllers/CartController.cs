@@ -1,5 +1,6 @@
 ﻿using eShopCoreWeb.ApiIntegration;
 using eShopCoreWeb.Utilities.Constants;
+using eShopCoreWeb.ViewModels.Sales;
 using eShopCoreWeb.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -9,18 +10,61 @@ namespace eShopCoreWeb.WebApp.Controllers
 {
     public class CartController:Controller
     {
+        private readonly IUserApiClient _userApiClient;
         private readonly IProductApiClient _productApiClient;
-        public CartController(IProductApiClient productApiClient)
+        private readonly IOrderApiClient _orderApiClient;
+        public CartController(IProductApiClient productApiClient, IOrderApiClient orderApiClient, IUserApiClient userApiClient)
         {
             _productApiClient = productApiClient;
+            _orderApiClient = orderApiClient;
+            _userApiClient = userApiClient;
         }
         public IActionResult Index()
         {
             return View();
         }
         [HttpGet]
-        public IActionResult GetListCartItem()
+        public IActionResult Checkout()
         {
+            return View(GetCheckoutViewModel());
+        }
+        [HttpPost]
+        public async Task<IActionResult> Checkout(CheckoutViewModel request)
+        {
+            var userName = User.Identity.Name;
+            var userObj = await _userApiClient.GetUserByUserName(userName);
+            var model = GetCheckoutViewModel();
+            var orderDetails = new List<OrderDetailViewModel>();
+            foreach (var item in model.CartItems)
+            {
+                orderDetails.Add(new OrderDetailViewModel()
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    Price = item.Price,
+                });
+            }
+            var checkoutRequest = new CheckoutRequest()
+            {
+                Address = request.CheckoutModel.Address,
+                Name = request.CheckoutModel.Name,
+                Email = request.CheckoutModel.Email,
+                PhoneNumber = request.CheckoutModel.PhoneNumber,
+                OrderDetails = orderDetails
+            };
+            var result = await _orderApiClient.CreateOrder(userObj.ResultObj.Id, checkoutRequest);
+            if (result)
+            {
+                TempData["SuccessMsg"] = "Order puschased successful";
+                return View(model);
+            }
+            TempData["SuccessMsg"] = "Order puschased fail";
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetListCartItem()
+        {
+            var order = await _orderApiClient.GetOrderById(3);
             var session = HttpContext.Session.GetString(SystemConstants.CartSession);
             List<CartItemViewModel> currentCart = new List<CartItemViewModel>();
             if (session != null)
@@ -87,6 +131,19 @@ namespace eShopCoreWeb.WebApp.Controllers
             }    
             HttpContext.Session.SetString(SystemConstants.CartSession, JsonConvert.SerializeObject(currentCart));
             return Ok(currentCart);
+        }
+        private CheckoutViewModel GetCheckoutViewModel()
+        {
+            var session = HttpContext.Session.GetString(SystemConstants.CartSession);
+            List<CartItemViewModel> currentCart = new List<CartItemViewModel>();
+            if (session != null)
+                currentCart = JsonConvert.DeserializeObject<List<CartItemViewModel>>(session);
+            var checkoutVm = new CheckoutViewModel()
+            {
+                CartItems = currentCart,
+                CheckoutModel = new CheckoutRequest()
+            };
+            return checkoutVm;
         }
     }
 }

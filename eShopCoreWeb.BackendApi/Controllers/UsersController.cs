@@ -81,6 +81,12 @@ namespace eShopCoreWeb.BackendApi.Controllers
             var user = await _userService.GetById(id);
             return Ok(user);
         }
+        [HttpGet("getbyname/{username}")]
+        public async Task<IActionResult> GetByUserName(string username)
+        {
+            var user = await _userService.GetByUserName(username);
+            return Ok(user);
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
