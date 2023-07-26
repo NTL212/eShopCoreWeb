@@ -20,6 +20,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
         }
         //http://localhost:port/product/paging
         [HttpGet("paging")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllPaging([FromQuery] GetManageProductPagingRequest request)
         {
             var products = await _manageProductService.GetAllPaging(request);
@@ -45,6 +46,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
         //}
         //http://localhost:port/product/1
         [HttpGet("{productId}/{languageId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(int productId, string languageId)
         {
             var product = await _manageProductService.GetById(productId, languageId);
@@ -103,18 +105,26 @@ namespace eShopCoreWeb.BackendApi.Controllers
             return Ok();
         }
 
-        [HttpPatch("price/{productId}/{newprice}")]
-        public async Task<IActionResult> UpdatePrice(int productId, decimal newprice)
+        [HttpPatch("price/{productId}")]
+        public async Task<IActionResult> UpdatePrice(int productId, [FromBody] decimal newprice)
         {
             var isSuccessful = await _manageProductService.UpdatePrice(productId, newprice);
             if (isSuccessful)
                 return Ok();
             return BadRequest();
         }
-        [HttpPatch("stock/{id}/{quantity}")]
-        public async Task<IActionResult> UpdateStock(int id, int quantity)
+        [HttpPatch("stock/{id}")]
+        public async Task<IActionResult> UpdateStock(int id, [FromBody] int quantity)
         {
             var isSuccessful = await _manageProductService.UpdateStock(id, quantity);
+            if (isSuccessful)
+                return Ok();
+            return BadRequest();
+        }
+        [HttpPatch("feature/{id}")]
+        public async Task<IActionResult> UpdateFeature(int id, [FromBody] bool isFeatured)
+        {
+            var isSuccessful = await _manageProductService.UpdateFeature(id, isFeatured);
             if (isSuccessful)
                 return Ok();
             return BadRequest();
@@ -129,6 +139,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
         }
         //http://localhost:port/product/1
         [HttpGet("image/{imageId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetImageById(int imageId)
         {
             var productImage = await _manageProductService.GetImageById(imageId);
@@ -138,6 +149,7 @@ namespace eShopCoreWeb.BackendApi.Controllers
         }
         //http://localhost:port/product/1
         [HttpGet("{productId}/listimage/")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetListImage(int productId)
         {
             var productImage = await _manageProductService.GetListImage(productId);

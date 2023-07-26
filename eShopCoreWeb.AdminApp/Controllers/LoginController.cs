@@ -28,7 +28,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
         public async Task<IActionResult> Index()
         {
             // Đăng xuất người dùng hiện tại (nếu có)
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
             };
             // Lưu JWT token vào Session để sử dụng trong các request sau này
             HttpContext.Session.SetString("Token", result.ResultObj);
-
+            var sessions = HttpContext.Session.GetString("Token");
             // Đăng nhập người dùng bằng cookie và chuyển hướng đến trang chủ
             await HttpContext.SignInAsync(
                         CookieAuthenticationDefaults.AuthenticationScheme,

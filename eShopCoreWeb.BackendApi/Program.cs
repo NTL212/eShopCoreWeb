@@ -1,4 +1,5 @@
-using eShopCoreWeb.Application.Catalog.Categories;
+﻿using eShopCoreWeb.Application.Catalog.Categories;
+using eShopCoreWeb.Application.Catalog.Orders;
 using eShopCoreWeb.Application.Catalog.Products;
 using eShopCoreWeb.Application.Common;
 using eShopCoreWeb.Application.System.Users;
@@ -30,12 +31,22 @@ builder.Services.AddDbContext<EShopDbContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin() // Cho phép tất cả các domain
+               .AllowAnyMethod() // Cho phép tất cả các phương thức (GET, POST, PUT, DELETE, v.v.)
+               .AllowAnyHeader(); // Cho phép tất cả các header
+    });
+});
 builder.Services.AddTransient<IManageProductService, ManageProductService>();
 builder.Services.AddTransient<IStorageService, FileStorageService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<ISlideService, SlideService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 
 builder.Services.AddTransient<UserManager<AppUser>,UserManager<AppUser>>();
 builder.Services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();

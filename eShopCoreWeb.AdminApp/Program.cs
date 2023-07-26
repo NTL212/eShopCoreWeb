@@ -14,6 +14,7 @@ builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
+                    options.Cookie.Name = "AdminAppCookie";
                     options.LoginPath = "/Login/Index/";
                     options.AccessDeniedPath = "/Users/Forbidden/";
                 });
@@ -21,6 +22,7 @@ builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv.Register
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddSession(options =>
 {
+    options.Cookie.Name = "AdminAppSession";
     options.IdleTimeout = TimeSpan.FromMinutes(30);
 }
 );
@@ -28,6 +30,7 @@ builder.Services.AddTransient<IUserApiClient, UserApiClient>();
 builder.Services.AddTransient<IRoleApiClient, RoleApiClient>();
 builder.Services.AddTransient<IProductApiClient,ProductApiClient>();
 builder.Services.AddTransient<ICategoryApiClient, CategoryApiClient>();
+builder.Services.AddTransient<IOrderApiClient, OrderApiClient>();
 
 var app = builder.Build();
 

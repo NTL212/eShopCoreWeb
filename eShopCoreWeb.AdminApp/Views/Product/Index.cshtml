@@ -77,7 +77,7 @@
                                     Lượt xem
                                 </th>
                                 <th>
-                                    Ngày tạo
+                                    IsFeatured
                                 </th>
                                 <th>
                                     Tên
@@ -101,19 +101,30 @@
                                     <img style="width:100px;height:100px;" src=" @("https://localhost:44321/user-content/"+ item.ThumnailImage)" alt="@item.Name">
                                     </td>
                                     <td>
-                                        @String.Format(format, "{0:c0}", @item.Price )
+                                    <form asp-action="UpdatePrice" asp-controller="Product" method="Post">
+                                        <input type="hidden" name="productId" value="@item.Id">
+                                        <input style="width:100px" min="0" type="number" name="newPrice" value="@item.Price">
+                                        <button class="btn btn-info btn-circle "><i class="fas fa-check"></i></button>
+                                    </form>
                                     </td>
                                     <td>
                                        @String.Format(format, "{0:c0}", @item.OriginalPrice )
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Stock)
+                                         <form asp-action="UpdateStock" asp-controller="Product" method="Post">
+                                           <input type="hidden" name="productId" value="@item.Id">
+                                        <input style="width:100px" min="0" max="99999" type="number" name="addedQuantity" value="@item.Stock">
+                                        <button class="btn btn-info btn-circle "><i class="fas fa-check"></i></button>
+                                       </form>
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.ViewCount)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.DateCreated)
+                                       <form asp-action="UpdateFeature" asp-controller="Product" method="Post">
+                                           <input type="hidden" name="productId" value="@item.Id">
+                                        <button class="btn @(item.IsFeatured==true?"btn-success":"btn-danger") btn-circle "><i class="fas fa-check"></i></button>
+                                       </form>
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Name)

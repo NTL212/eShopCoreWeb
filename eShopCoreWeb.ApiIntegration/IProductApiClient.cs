@@ -1,10 +1,6 @@
 ﻿using eShopCoreWeb.ViewModels.Catalog.ProductImages;
 using eShopCoreWeb.ViewModels.Catalog.Products;
 using eShopCoreWeb.ViewModels.Common;
-using eShopCoreWeb.ViewModels.System.Roles;
-using eShopCoreWeb.ViewModels.System.Users;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace eShopCoreWeb.ApiIntegration
 {
@@ -13,6 +9,10 @@ namespace eShopCoreWeb.ApiIntegration
         Task<PagedResult<ProductViewModel>> GetProductPaging(GetManageProductPagingRequest request);
         Task<bool> CreateProduct(ProductCreateRequest request);
         Task<bool> UpdateProduct(ProductUpdateRequest request);
+        Task<bool> UpdatePrice(int productId, decimal newPrice);
+        Task<bool> UpdateStock(int productId, int addedQuantity);
+        Task<bool> UpdateFeature(int productId, bool isFeatured);
+        Task<bool> AddViewcount(int productId);
         Task<bool> DeleteProduct(int id);
         Task<ProductViewModel> GetProductById(int id, string languageId);
         Task<List<ProductImageViewModel>> GetListImage(int productId);

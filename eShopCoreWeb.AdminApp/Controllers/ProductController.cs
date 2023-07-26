@@ -117,6 +117,60 @@ namespace eShopCoreWeb.AdminApp.Controllers
             }
             return View(request);
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateFeature(int productId)
+        {
+            var product = await _productApiClient.GetProductById(productId, "vi");
+            bool isFeatured;
+            if (product.IsFeatured==true)
+            {
+                isFeatured=false;   
+            }
+            else
+            {
+                isFeatured = true;
+            }    
+            var result = await _productApiClient.UpdateFeature(productId, isFeatured);
+            if (result)
+            {
+                TempData["result"] = $"Cập nhật feature của {product.Name} thành {isFeatured} thành công";
+            }
+            else
+            {
+                TempData["result"] = $"Cập nhật status của {product.Name}  thành {isFeatured} thất bại";
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateStock(int productId, int addedQuantity)
+        {
+            var product = await _productApiClient.GetProductById(productId, "vi");
+            var result = await _productApiClient.UpdateStock(productId, addedQuantity);
+            if (result)
+            {
+                TempData["result"] = $"Cập nhật số lượng của {product.Name} thành công";
+            }
+            else
+            {
+                TempData["result"] = $"Cập nhật số lượng của {product.Name} thất bại";
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdatePrice(int productId, decimal newPrice)
+        {
+            var product = await _productApiClient.GetProductById(productId, "vi");
+            var result = await _productApiClient.UpdatePrice(productId, newPrice);
+            if (result)
+            {
+                TempData["result"] = $"Cập nhật giá của {product.Name} thành công";
+            }
+            else
+            {
+                TempData["result"] = $"Cập nhật giá của {product.Name} thất bại";
+            }
+            return RedirectToAction("Index");
+        }
         [HttpGet]
         public async Task<IActionResult> Details(int id, string languageId)
         {
@@ -170,6 +224,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
         {
             var product = await _productApiClient.GetProductById(id, languageId);
             var categories = await _categoryApiClient.GetAll(languageId);
+            categories = categories.FindAll(x=>x.ParentId==0);
             var categoryAssignRequest = new CategoryAssignRequest();
             categoryAssignRequest.Id = product.Id;
             foreach (var category in categories)
@@ -178,6 +233,7 @@ namespace eShopCoreWeb.AdminApp.Controllers
                 {
                     Id = category.Id.ToString(),
                     Name = category.Name,
+                    
                     Selected = product.Categories.Contains(category.Name)
                 });
             }

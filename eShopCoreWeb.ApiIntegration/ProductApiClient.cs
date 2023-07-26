@@ -4,6 +4,7 @@ using eShopCoreWeb.ViewModels.Catalog.Products;
 using eShopCoreWeb.ViewModels.Common;
 using eShopCoreWeb.ViewModels.System.Roles;
 using eShopCoreWeb.ViewModels.System.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -90,7 +91,7 @@ namespace eShopCoreWeb.ApiIntegration
 
             return JsonConvert.DeserializeObject<ProductViewModel>(body);
         }
-
+        [AllowAnonymous]
         public async Task<PagedResult<ProductViewModel>> GetProductPaging(GetManageProductPagingRequest request)
         {
             var client = _httpClientFactor.CreateClient();
@@ -250,6 +251,61 @@ namespace eShopCoreWeb.ApiIntegration
                 return JsonConvert.DeserializeObject<ProductImageViewModel>(body);
 
             return JsonConvert.DeserializeObject<ProductImageViewModel>(body);
+        }
+
+        public async  Task<bool> UpdatePrice(int productId, decimal newPrice)
+        {
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var json = JsonConvert.SerializeObject(newPrice);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PatchAsync($"/api/products/price/{productId}",httpContent);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateStock(int productId, int addedQuantity)
+        {
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var json = JsonConvert.SerializeObject(addedQuantity);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PatchAsync($"/api/products/stock/{productId}", httpContent);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> UpdateFeature(int productId, bool isFeatured)
+        {
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var json = JsonConvert.SerializeObject(isFeatured);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PatchAsync($"/api/products/feature/{productId}", httpContent);
+            return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> AddViewcount(int productId)
+        {
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var json = JsonConvert.SerializeObject(productId);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PatchAsync($"/api/products/viewcount/{productId}", httpContent);
+            return response.IsSuccessStatusCode;
         }
     }
 }

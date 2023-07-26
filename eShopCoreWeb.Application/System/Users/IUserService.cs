@@ -14,10 +14,13 @@ namespace eShopCoreWeb.Application.System.Users
     {
         Task<ApiResult<string>> Authenticate(LoginRequest request);
         Task<ApiResult<bool>> Register(RegisterRequest request);
+        Task<ApiResult<bool>> CreateGoogleUser(CreateGoogleUserRequest request);
         Task<ApiResult<bool>> UpdateUser(Guid id, UserUpdateRequest request);
         Task<ApiResult<bool>> RoleAssign(Guid id, RoleAssignRequest request);
         Task<ApiResult<bool>> DeleteUser(Guid id);
         Task<ApiResult<UserViewModel>> GetById(Guid id);
+        Task<ApiResult<UserViewModel>> GetByUserName(string username);
+        Task<ApiResult<UserViewModel>> GetByUserEmail(string email);
         Task<ApiResult<PagedResult<UserViewModel>>> GetUserPaging(GetUserPagingRequest request);
     }
 }
