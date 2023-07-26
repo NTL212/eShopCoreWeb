@@ -18,6 +18,12 @@ namespace eShopCoreWeb.BackendApi.Controllers
         {
             _orderService = orderService;
         }
+        [HttpGet("getbyuser/{username}")]
+        public async Task<IActionResult> GetAllByUserName(string username)
+        {
+            var orders = await _orderService.GetAllByUserName(username);
+            return Ok(orders);
+        }
         [HttpGet("paging")]
         public async Task<IActionResult> GetUserPaging([FromQuery] GetOrderPagingRequest request)
         {

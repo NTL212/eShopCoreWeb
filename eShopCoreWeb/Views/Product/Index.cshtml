@@ -2,7 +2,10 @@
 @using eShopCoreWeb.ViewModels.Common;
 @using Microsoft.AspNetCore.Http;
 @model PagedResult<eShopCoreWeb.ViewModels.Catalog.Products.ProductViewModel>
-
+﻿
+@{
+	var culture = CultureInfo.CurrentCulture.Name;
+}
 @{
     ViewData["Title"] = "Shop";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -13,10 +16,10 @@
 	<div class="row">
 	<div class="span9">
     <ul class="breadcrumb">
-		<li><a href="index.html">Home</a> <span class="divider">/</span></li>
-		<li class="active">Products Name</li>
+		<li><a href="@Url.Action("Index","Home")"><localize>Home</localize></a> <span class="divider">/</span></li>
+		<li class="active"><localize>All Products</localize></li>
     </ul>
-	<h3> Tất cả sản phẩm <small class="pull-right"> @Model.Items.Count products are available </small></h3>	
+	<h3><localize>All Products</localize><small class="pull-right"> @Model.Items.Count products are available </small></h3>	
 	<hr class="soft"/>
 				<form class="form-horizontal span6" method="get" asp-action="Index" asp-controller="Product">
 					@{
@@ -25,9 +28,9 @@
 					}
 		<div class="control-group">
 						<input type="hidden" name="categoryId" value="@categoryId" />
-		  <label class="control-label alignL">Sort By </label>
-			<select id="sort" name="sort" onchange="this.form.submit()">
-				<option>----------------Sort By----------------</option>
+						<input type="hidden" name="culture" value="@culture" />
+			<select id="sort" name="sort" onchange="this.form.submit()" style="width:fit-content">
+				<option>----------------<localize>Sort By</localize>----------------</option>
               <option value="0">Product name A - Z</option>
 				<option value="1">Product name Z - A</option>
 							<option value="2">Product Stoke</option>
@@ -53,7 +56,7 @@
 								<div class="span4">
 									<h3>@item.Name</h3>
 									<hr class="soft" />
-									<a class="btn btn-small pull-right" href="@Url.Action("Detail","Product",new {id = item.Id})">View Details</a>
+									<a class="btn btn-small pull-right" href="@Url.Action("Detail","Product",new {id = item.Id, culture=culture})">View Details</a>
 									<br class="clr" />
 								</div>
 								<div class="span3 alignR">
@@ -63,8 +66,8 @@
 											<input type="checkbox">  Adds product to compair
 										</label><br />
 
-										<a href="@Url.Action("Detail","Product",new {id = item.Id})" class="btn btn-large btn-primary"> Add to <i class=" icon-shopping-cart"></i></a>
-										<a href="@Url.Action("Detail","Product",new {id = item.Id})" class="btn btn-large"><i class="icon-zoom-in"></i></a>
+										<a href="@Url.Action("Detail","Product",new {id = item.Id, culture=culture})" class="btn btn-large btn-primary"> <localize>Add to</localize> <i class=" icon-shopping-cart"></i></a>
+										<a href="@Url.Action("Detail","Product",new {id = item.Id, culture=culture})" class="btn btn-large"><i class="icon-zoom-in"></i></a>
 
 									</form>
 								</div>
@@ -79,14 +82,15 @@
 			{
 				<li class="span3">
 			  <div class="thumbnail">
-				<a href="@Url.Action("Detail","Product",new {id = item.Id})"><img style="width:100px;height:100px;" src=" @("https://localhost:44321/user-content/"+ item.ThumnailImage)" /></a>
+										<a href="@Url.Action("Detail","Product",new {id = item.Id, culture=culture})"><img style="width:100px;height:100px;" src=" @("https://localhost:44321/user-content/"+ item.ThumnailImage)" /></a>
 				<div class="caption">
 				  <h5>@item.Name</h5>
 				  <p> 
 					@item.Description
 				  </p>
-				   <h4 style="text-align:center"><a class="btn" href="@Url.Action("Detail","Product",new{id=item.Id})"> <i class="icon-zoom-in"></i></a> 
-					   <a class="btn btn-add-cart" data-id="@item.Id" href="#">Add to <i class="icon-shopping-cart"></i></a> 
+											<h4 style="text-align:center">
+												<a class="btn" href="@Url.Action("Detail","Product",new{id=item.Id, culture=culture})"> <i class="icon-zoom-in"></i></a>
+												<a class="btn btn-add-cart" data-id="@item.Id" href="#">Add to <i class="icon-shopping-cart"></i></a> 
 					   <a class="btn btn-primary" href="#">@item.Price</a></h4>
 				</div>
 			  </div>

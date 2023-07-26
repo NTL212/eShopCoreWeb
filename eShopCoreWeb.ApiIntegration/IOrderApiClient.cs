@@ -16,6 +16,7 @@ namespace eShopCoreWeb.ApiIntegration
     public interface IOrderApiClient
     {
         Task<bool> CreateOrder(Guid userId, CheckoutRequest request);
+        Task<List<OrderViewModel>> GetAllByUserName(string username);
         Task<OrderViewModel> GetOrderById(int orderId);
         Task<ApiResult<PagedResult<OrderViewModel>>> GetOrderPaging(GetOrderPagingRequest request);
         Task<bool> UpdateStatus(int orderId, int status);

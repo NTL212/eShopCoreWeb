@@ -32,8 +32,18 @@ namespace eShopCoreWeb.ApiIntegration
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync($"/api/orders/{userId}", httpContent);
-            var result = await response.Content.ReadAsStringAsync();
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<List<OrderViewModel>> GetAllByUserName(string username)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var client = _httpClientFactor.CreateClient();
+            client.BaseAddress = new Uri("https://localhost:44321");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+            var response = await client.GetAsync($"/api/orders/getbyuser/{username}");
+            var body = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<OrderViewModel>>(body);
         }
 
         public async Task<OrderViewModel> GetOrderById( int orderId)
@@ -54,6 +64,8 @@ namespace eShopCoreWeb.ApiIntegration
             var response = await client.GetAsync($"/api/orders/paging?pageIndex=" +
                 $"{request.PageIndex}&pageSize={request.PageSize}&keyword={request.Keyword}&bearerToken={request.BearerToken}");
             var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<PagedResult<OrderViewModel>>>(body);
             return JsonConvert.DeserializeObject<ApiErrorResult<PagedResult<OrderViewModel>>>(body);
         }
 

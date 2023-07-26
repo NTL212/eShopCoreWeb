@@ -19,10 +19,12 @@ namespace eShopCoreWeb.Application.Catalog.Orders
     public class OrderService : IOrderService
     {
         private readonly EShopDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public OrderService(EShopDbContext context)
+        public OrderService(EShopDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<int> Create(Guid userId, CheckoutRequest request)
@@ -56,9 +58,17 @@ namespace eShopCoreWeb.Application.Catalog.Orders
         }
 
 
-        public Task<List<OrderViewModel>> GetAll()
+        public async Task<List<OrderViewModel>> GetAllByUserName(string username)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByNameAsync(username);
+            var orders = await _context.Orders.Where(x => x.UserId == user.Id).OrderByDescending(x=>x.OrderDate).Select(x=>x.Id).ToListAsync();
+            var listOrders = new List<OrderViewModel>();
+            foreach(var item in orders)
+            {
+                listOrders.Add(GetById(item).Result);
+            }
+            return listOrders;
+
         }
 
         public async Task<OrderViewModel> GetById(int orderId=2)
@@ -72,6 +82,11 @@ namespace eShopCoreWeb.Application.Catalog.Orders
                      OrderId = i.OrderId,
                      Price = i.Price,
                 }).ToListAsync();
+            foreach(var item in orderDetails)
+            {
+                var productImage = await _context.ProductImages.FirstOrDefaultAsync(t => t.ProductId == item.ProductId);
+                item.ThumnailImage = productImage.ImagePath;
+            }    
             var total = await _context.OrderDetails.SumAsync(x => x.Price * x.Quantity);
             int active;
             if(order.Status==Data.Enums.OrderStatus.InProgress)

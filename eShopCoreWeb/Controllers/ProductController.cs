@@ -25,7 +25,7 @@ namespace eShopCoreWeb.WebApp.Controllers
         }
         [HttpGet]
         // GET: ProductsController
-        public async Task<IActionResult> Index(int? categoryId, int? sort, string keyword = "default", int pageIndex = 1, int pageSize = 2, string languageId = "vi")
+        public async Task<IActionResult> Index(int? categoryId, int? sort, string keyword = "default", int pageIndex = 1, int pageSize = 2, string culture = "vi")
         {
 
 
@@ -39,14 +39,14 @@ namespace eShopCoreWeb.WebApp.Controllers
                 Keyword = keyword,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
-                LanguageId = languageId,
+                LanguageId = culture,
                 CategoryId = categoryId,
                 Sort =sort
             };
 
             // Gọi API để lấy danh sách sản phẩm
             var data = await _productApiClient.GetProductPaging(request);
-            var categories = await _categoryApiClient.GetAll(languageId);
+            var categories = await _categoryApiClient.GetAll(culture);
             ViewBag.Categories = categories.Select(x => new SelectListItem()
             {
                 Text = x.Name,
@@ -60,9 +60,9 @@ namespace eShopCoreWeb.WebApp.Controllers
         }
 
         // GET: ProductsController/Details/5
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail(int id, string culture)
         {
-            var product = await _productApiClient.GetProductById(id, "vi");
+            var product = await _productApiClient.GetProductById(id, culture);
             var productImages = await _productApiClient.GetListImage(id);
             return View(new WebApp.Models.ProductDetailViewModel()
             {

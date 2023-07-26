@@ -4,6 +4,7 @@ using eShopCoreWeb.ViewModels.Common;
 using eShopCoreWeb.ViewModels.System.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -74,7 +75,7 @@ namespace eShopCoreWeb.Application.System.Users
 
             user = new AppUser()
             {
-                Dob = request.Dob,
+                Dob = (DateTime)request.Dob,
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
@@ -206,7 +207,6 @@ namespace eShopCoreWeb.Application.System.Users
                     await _userManager.AddToRoleAsync(user, roleName);
                 }
             }
-
             return new ApiSuccessResult<bool>();
         }
 
@@ -230,6 +230,69 @@ namespace eShopCoreWeb.Application.System.Users
                 Roles = roles
             };
             return new ApiSuccessResult<UserViewModel>(userVm);
+        }
+
+        public async Task<ApiResult<UserViewModel>> GetByUserEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new ApiErrorResult<UserViewModel>("User khong ton tai");
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+            var userVm = new UserViewModel()
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                FirstName = user.FirstName,
+                Dob = user.Dob,
+                Id = user.Id,
+                LastName = user.LastName,
+                UserName = user.UserName,
+                Roles = roles
+            };
+            return new ApiSuccessResult<UserViewModel>(userVm);
+        }
+
+        public async Task<ApiResult<bool>> CreateGoogleUser(CreateGoogleUserRequest request)
+        {
+
+            var user = await _userManager.FindByNameAsync(request.UserName);
+            if (user != null)
+            {
+                return new ApiErrorResult<bool>("Tài khoản đã tồn tại");
+            }
+            if (await _userManager.FindByEmailAsync(request.Email) != null)
+            {
+                return new ApiErrorResult<bool>("Emai đã tồn tại");
+            }
+
+            user = new AppUser()
+            {
+                Email = request.Email,
+                UserName = request.Email,
+                FirstName = request.UserName,
+                LastName = request.UserName,
+
+            };
+            var result = await _userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                // Thêm thông tin đăng nhập bên ngoài vào bảng AspNetUserLogins
+                var loginInfo = new UserLoginInfo("Google", request.ProviderKey, "Google");
+                var addLoginResult = await _userManager.AddLoginAsync(user, loginInfo);
+
+                if (addLoginResult.Succeeded)
+                {
+                    return new ApiSuccessResult<bool>();
+                }
+                else
+                {
+                    // Xử lý thêm thông tin đăng nhập bên ngoài không thành công (nếu cần)
+                    return new ApiErrorResult<bool>("Thêm thông tin đăng nhập bên ngoài không thành công");
+                }
+            }
+            return new ApiErrorResult<bool>("Đăng ký không thành công");
         }
     }
 }

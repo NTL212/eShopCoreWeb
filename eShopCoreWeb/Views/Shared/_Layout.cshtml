@@ -1,4 +1,7 @@
-﻿
+﻿﻿
+@{
+    var culture = CultureInfo.CurrentCulture.Name;
+}
 @using Microsoft.AspNetCore.Http;
 @using eShopCoreWeb.ViewModels.Catalog.Categories;
 @using Newtonsoft.Json;
@@ -7,7 +10,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Trang chủ</title>
+    <title>@ViewData["Title"]</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -36,16 +39,27 @@
     <style type="text/css" id="enject"></style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.15.5/dist/sweetalert2.min.css">
 
-    <!-- Custom styles for this page -->
-    <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 </head>
 <body>
-    <input type="hidden" id="hidCulture" value="vi" />
+    <input type="hidden" id="hidCulture" value=@culture />
     <input type="hidden" id="hidBaseAddress" value="@Configuration["BaseAddress"]" />
     <div id="header">
         <div class="container">
             <div id="welcomeLine" class="row">
-                <div class="span6" style="font-size:20px">Welcome!   <span></span><strong>@User.Identity.Name</strong></div>
+                <div class="span6" style="font-size:20px">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <localize>Welcome!</localize>
+                    }   <span></span><strong class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@User.Identity.Name</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="@Url.Action("Update","User",new {username=User.Identity.Name})"><localize>Profile</localize></a></li>
+                            <li><a href="@Url.Action("ListOrder","User",new {username=User.Identity.Name})"><localize>Orders</localize></a></li>
+                        </ul>
+                    </strong>
+                    
+                    
+                </div>
      
                 <div class="span6">
                     <div class="pull-right">
@@ -55,7 +69,7 @@
 
                         <a href="@Url.Action("Index","Cart")">
                             <span class="btn btn-mini btn-primary" >
-                                <i class="icon-shopping-cart icon-white"></i> [ <span id="lbl_number_items_header">0</span> ] Itemes in your cart
+                                <i class="icon-shopping-cart icon-white"></i> [ <span id="lbl_number_items_header">0</span> ] <localize>Itemes in your cart</localize>
                             </span>
                         </a>
                     </div>
@@ -86,18 +100,19 @@
                     }
                     <form class="form-inline navbar-search" method="get" asp-action="Index"asp-controller="Product">
                         <input type="text" name="keyword" class="srchTxt" />
-                        <select id="categoryId" name="categoryId" class="srchTxt">
-                             <option>Select Category</option>
+                        <input type="hidden" name="languageId" value="@culture" />
+                        <select id="categoryId" name="categoryId" class="srchTxt" style="width:fit-content">
+                            <option value=""><localize>Select Category</localize></option>
                             @foreach(var category in categories)
                             {
                                 <option value="@category.Id">@category.Name</option>
                             }
                         </select>
-                        <button class="btn btn-primary" type="submit"><i class="fas fa-search fa-sm"></i> Tìm kiếm</button>
+                        <button class="btn btn-primary" type="submit"><i class="fas fa-search fa-sm"></i><localize>Search</localize></button>
                     </form>
                     <ul id="topMenu" class="nav pull-right">
-                        <li class=""><a href="@Url.Action("Index","Product")"  >Shop</a></li>
-                        <li class=""><a  >Contact</a></li>
+                        <li class=""><a href="@Url.Action("Index","Product", new {culture=culture} )" localize-content >Shop</a></li>
+                        <li class=""><a asp-route-culture="@culture" localize-content>Contact</a></li>
 
                         @if(User.Identity.Name!=null)
                         {
@@ -120,7 +135,6 @@
                                 </a>
                             </li>
                         }
-                        }
                     </ul>
                 </div>
             </div>
@@ -138,11 +152,11 @@
                         @foreach (var parentCategory in parentCategories)
                                 {
                             <li class="subMenu">
-                                <a href="@Url.Action("Index", "Product", new{categoryId = parentCategory.Id})">@parentCategory.Name</a>
+                                <a href="@Url.Action("Index", "Product", new{categoryId = parentCategory.Id, culture=culture})">@parentCategory.Name</a>
                                 <ul style="display:none">
                                     @foreach (var category in parentCategory.ChildCategories)
                                     {
-                                        <li><a href="@Url.Action("Index", "Product", new{categoryId = category.Id})"><i class="icon-chevron-right"></i>@category.Name</a></li>
+                                        <li><a href="@Url.Action("Index", "Product", new{categoryId = category.Id, culture=culture})"><i class="icon-chevron-right"></i>@category.Name</a></li>
                                     }
                
                                 </ul>
@@ -223,23 +237,8 @@
 
     <script src="/themes/js/bootshop.js"></script>
     <script src="/themes/js/jquery.lightbox-0.5.js"></script>
-    <script src="/js/site.js"></script>
-  <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site2.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
-
-    <!-- Page level plugins -->
-    <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="js/demo/datatables-demo.js"></script>
     <script>
         var site = new SiteController();
         site.initialize();

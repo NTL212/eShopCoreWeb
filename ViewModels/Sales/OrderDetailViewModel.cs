@@ -9,6 +9,8 @@ namespace eShopCoreWeb.ViewModels.Sales
     public class OrderDetailViewModel
     {
         public int OrderId { get; set; }
+        public string? ProductName { get; set; }
+        public string? ThumnailImage { set; get; }
         public int ProductId { get; set; }
         public decimal Price { get; set; } 
         public int Quantity { get; set; }

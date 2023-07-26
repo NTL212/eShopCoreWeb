@@ -2,7 +2,7 @@
     this.initialize = function () {
         loadData();
         regsiterEvents();
-            
+
     }
     function regsiterEvents() {
         // Write your JavaScript code.
@@ -22,7 +22,7 @@
         const culture = $('#hidCulture').val();
         $.ajax({
             type: "POST",
-            url: '/Cart/UpdateCart',
+            url: "/" + culture + '/Cart/UpdateCart',
             data: {
                 id: id,
                 quantity: quantity
@@ -56,7 +56,7 @@
         const culture = $('#hidCulture').val();
         $.ajax({
             type: "GET",
-            url: '/Cart/GetListCartItem',
+            url: "/" + culture + '/Cart/GetListCartItem',
             success: function (res) {
                 if (res.length === 0) {
                     $('#tbl_cart').hide();
@@ -67,11 +67,11 @@
                 $.each(res, function (i, item) {
                     var amount = item.price * item.quantity;
                     html += "<tr>"
-                        + "<td> <img width=\"60\" src=\"" + $('#hidBaseAddress').val() +"/user-content/"+ item.image + "\" alt=\"\" /></td>"
+                        + "<td> <img width=\"60\" src=\"" + $('#hidBaseAddress').val() + "/user-content/" + item.image + "\" alt=\"\" /></td>"
                         + "<td>" + item.description + "</td>"
                         + "<td><div class=\"input-append\"><input class=\"span1\" style=\"max-width: 34px\" placeholder=\"" + item.quantity + "\" id=\"txt_quantity_" + item.productId + "\" value=\"" + item.quantity + "\"size=\"16\" type=\"text\">"
                         + "<button class=\"btn btn-update-cart\" data-id=\"" + item.productId + "\" type =\"button\"> <i class=\"icon-edit\"></i></button>"
-                 
+
                         + "<button class=\"btn btn-danger btn-remove-cart\" type=\"button\" data-id=\"" + item.productId + "\"><i class=\"icon-remove icon-white\"></i></button>"
                         + "</div>"
                         + "</td>"

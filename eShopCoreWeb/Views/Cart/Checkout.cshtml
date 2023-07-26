@@ -6,20 +6,52 @@
 }
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @{
-    var culture = "vi";
+    var culture = CultureInfo.CurrentCulture.Name;
 }
 <ul class="breadcrumb">
-    <li><a href="index.html">Home</a> <span class="divider">/</span></li>
-    <li class="active"> SHOPPING CART</li>
+    <li><a href="@Url.Action("Index", "Home", new {culture=culture})"><localize>Home</localize></a> <span class="divider">/</span></li>
+    <li class="active"> <localize>SHOPPING CART</localize></li>
 </ul>
 <h3>
-    SHOPPING CART [ <small>@Model.CartItems.Count Item(s) </small>]
-    <a href="/" class="btn btn-large pull-right"><i class="icon-arrow-left"></i> Continue Shopping </a>
+   
+    <localize> SHOPPING CART</localize>[ <small>@Model.CartItems.Count Item(s) </small>]
+    <a href="@Url.Action("Index", "Product", new {culture=culture})" class="btn btn-large pull-right"><i class="icon-arrow-left"></i><localize> Continue Shopping</localize> </a>
 </h3>
 <hr class="soft" />
 @if (TempData["SuccessMsg"] != null)
 {
-    <span class="alert alert-success">@TempData["SuccessMsg"]</span>
+    <span class="alert alert-success"><localize>@TempData["SuccessMsg"]</localize></span>
+    <h3 localize-content>Order Item List</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th localize-content>Product</th>
+                <th localize-content>Description</th>
+                <th localize-content>Quantity</th>
+                <th localize-content>Price</th>
+                <th localize-content>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td> <img width="60" src="@(Configuration["BaseAddress"]+"/user-content/" + item.Image)" alt="" /></td>
+                    <td>@item.Description</td>
+                    <td>
+                        @item.Quantity
+                    </td>
+                    <td>@item.Price</td>
+                    <td>@(item.Quantity * item.Price)</td>
+                </tr>
+            }
+
+            <tr>
+                <td colspan="4" style="text-align:right"><strong>TOTAL =</strong></td>
+                <td class="label label-important" style="display:block"> <strong> @Model.CartItems.Sum(x => x.Quantity * x.Price).ToString("N0")</strong></td>
+            </tr>
+        </tbody>
+    </table>
 }
 else
 {
@@ -59,7 +91,7 @@ else
         <tr><th>ESTIMATE YOUR SHIPPING </th></tr>
         <tr>
             <td>
-                <form class="form-horizontal" action="/Cart/Checkout" method="post">
+                <form class="form-horizontal" asp-action="Checkout" asp-controller="Cart" method="post">
                     <div class="control-group">
                         <label class="control-label" for="inputCountry">Name </label>
                         <div class="controls">

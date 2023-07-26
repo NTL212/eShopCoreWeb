@@ -10,17 +10,17 @@
 		<div class="row">
 			<div class="span9">
 				<ul class="breadcrumb">
-					<li><a href="index.html">Home</a> <span class="divider">/</span></li>
-					<li class="active">Login</li>
+					<li><a href="@Url.Action("Index","Home")"><localize>Home</localize></a> <span class="divider">/</span></li>
+					<li class="active"><localize>Login</localize></li>
 				</ul>
-				<h3> Login</h3>
+				<h3> <localize>Login</localize></h3>
 				<hr class="soft" />
 
 				<div class="row" style="">
 					<div class="text-center">
 					<div class="span4">
 						<div class="well">
-							<h5>Chào mừng</h5>
+							<h5><localize>Wellcome!</localize></h5>
 							<form asp-action="Index">
 								<div asp-validation-summary="All" class="text-danger"></div>
 								<div class="form-group">
@@ -42,16 +42,13 @@
 									</div>
 								</div>
 								<button type="submit" class="btn btn-primary btn-user btn-block">
-									Đăng nhập
+									<localize>Login</localize>
 								</button>
 								<hr>
-								<a href="index.html" class="btn btn-google btn-user btn-block">
-									<i class="fab fa-google fa-fw"></i> Đăng nhập bằng Google
-								</a>
-								<a href="index.html" class="btn btn-facebook btn-user btn-block">
-									<i class="fab fa-facebook-f fa-fw"></i> Đăng nhập bằng Facebook
+									<a class="btn btn-primary" href="/vi/Account/ExternalLogin?provider=Google" localize-content>Login with Google</a>
 								</a>
 							</form>
+							
 						</div>
 					</div>
 				</div>

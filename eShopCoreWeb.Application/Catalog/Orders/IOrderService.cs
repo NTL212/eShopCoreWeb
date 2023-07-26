@@ -13,7 +13,7 @@ namespace eShopCoreWeb.Application.Catalog.Orders
 {
     public interface IOrderService
     {
-        Task<List<OrderViewModel>> GetAll();
+        Task<List<OrderViewModel>> GetAllByUserName(string username);
         Task<int> Create(Guid userId, CheckoutRequest request);
 
         //Task<int> Update(CategoryUpdateRequest request);

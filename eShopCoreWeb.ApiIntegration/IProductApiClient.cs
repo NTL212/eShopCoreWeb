@@ -1,10 +1,6 @@
 ﻿using eShopCoreWeb.ViewModels.Catalog.ProductImages;
 using eShopCoreWeb.ViewModels.Catalog.Products;
 using eShopCoreWeb.ViewModels.Common;
-using eShopCoreWeb.ViewModels.System.Roles;
-using eShopCoreWeb.ViewModels.System.Users;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace eShopCoreWeb.ApiIntegration
 {

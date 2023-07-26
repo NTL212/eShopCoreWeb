@@ -53,7 +53,18 @@ namespace eShopCoreWeb.BackendApi.Controllers
             }
             return Ok(result);
         }
-       
+
+        [HttpPost("google")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateGoogleUser([FromBody] CreateGoogleUserRequest request)
+        {
+            var result = await _userService.CreateGoogleUser(request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id,[FromBody] UserUpdateRequest request)
@@ -85,6 +96,13 @@ namespace eShopCoreWeb.BackendApi.Controllers
         public async Task<IActionResult> GetByUserName(string username)
         {
             var user = await _userService.GetByUserName(username);
+            return Ok(user);
+        }
+        [AllowAnonymous]
+        [HttpGet("getbyemail/{email}")]
+        public async Task<IActionResult> GetByEmail(string email)
+        {
+            var user = await _userService.GetByUserEmail(email);
             return Ok(user);
         }
         [HttpDelete("{id}")]

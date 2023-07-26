@@ -482,7 +482,7 @@ namespace eShopCoreWeb.Application.Catalog.Products
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
                        
                         from pic in ppic.DefaultIfEmpty()
-                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        join pi in _context.ProductImages.Where(x => x.Caption.Contains("Thumbnail image")) on p.Id equals pi.ProductId into ppi
                         from pi in ppi.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
@@ -517,7 +517,7 @@ namespace eShopCoreWeb.Application.Catalog.Products
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId into ppic
                         //join pi in _context.ProductImages.Where(x => x.IsDefault == true) on p.Id equals pi.ProductId
                         from pic in ppic.DefaultIfEmpty()
-                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        join pi in _context.ProductImages.Where(x => x.Caption.Contains("Thumbnail image")) on p.Id equals pi.ProductId into ppi
                         from pi in ppi.DefaultIfEmpty()
                         join c in _context.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()

@@ -4,7 +4,7 @@ using eShopCoreWeb.ViewModels.Sales;
 using eShopCoreWeb.WebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-
+using System.Security.Claims;
 
 namespace eShopCoreWeb.WebApp.Controllers
 {
@@ -32,7 +32,12 @@ namespace eShopCoreWeb.WebApp.Controllers
         public async Task<IActionResult> Checkout(CheckoutViewModel request)
         {
             var userName = User.Identity.Name;
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
             var userObj = await _userApiClient.GetUserByUserName(userName);
+            if(userObj==null)
+            {
+                userObj = await _userApiClient.GetUserByEmail(userEmail);
+            }
             var model = GetCheckoutViewModel();
             var orderDetails = new List<OrderDetailViewModel>();
             foreach (var item in model.CartItems)
@@ -71,7 +76,7 @@ namespace eShopCoreWeb.WebApp.Controllers
                 currentCart = JsonConvert.DeserializeObject<List<CartItemViewModel>>(session);
             return Ok(currentCart);
         }
-        public async Task<IActionResult> AddToCart(int id, string languageId)
+        public async Task<IActionResult> AddToCart(int id, string languageId, int cartQuantity)
         {
             //if (!User.Identity.IsAuthenticated)
             //{
@@ -86,10 +91,18 @@ namespace eShopCoreWeb.WebApp.Controllers
             List<CartItemViewModel> currentCart = new List<CartItemViewModel>();
             if (session != null)
                 currentCart = JsonConvert.DeserializeObject<List<CartItemViewModel>>(session);  
-            int quantity = 1;
+            int quantity;
+            if(cartQuantity!=null || cartQuantity>0)
+            {
+                quantity = cartQuantity;
+            }
+            else
+            {
+                quantity = 1;
+            }
             if (currentCart.Any(x => x.ProductId == id))
             {
-                currentCart.First(x => x.ProductId == id).Quantity += 1; 
+                currentCart.First(x => x.ProductId == id).Quantity += quantity; 
                 HttpContext.Session.SetString(SystemConstants.CartSession, JsonConvert.SerializeObject(currentCart));
                 return Ok(currentCart);
             }
