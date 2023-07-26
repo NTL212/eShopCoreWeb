@@ -10,7 +10,7 @@ ASP.NET Core 6.0 project references TEDU.
 
 - How to configure and run
 
-  Clone code from Github: git clone https://github.com/teduinternational/eShopSolution
+  Clone code from Github: git clone https://github.com/NTL212/eShopCoreWeb
 
   Open solution eShopSolution.sln in Visual Studio 2022
 
