@@ -1,4 +1,4 @@
-ASP.NET Core 6.0 project references TEDU.
+ASP.NET Core 6.0 project
 - Technologies
   + ASP.NET Core 6.0
   + Entity Framework Core 6.0
@@ -31,10 +31,3 @@ ASP.NET Core 6.0 project references TEDU.
   Set multiple run project: Right click to Solution and choose Properties and set Multiple Project, choose Start for 3 Projects: BackendApi, WebApp and AdminApp.
 
   Choose profile to run or press F5
-- How to contribute
-  Fork and create your branch
-  Create Pull request to us.
-
-Admin template: https://startbootstrap.com/templates/sb-admin/
-
-Portal template: https://www.free-css.com/free-css-templates/page194/bootstrap-shop
