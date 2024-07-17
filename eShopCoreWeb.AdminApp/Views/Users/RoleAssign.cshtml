@@ -1,0 +1,45 @@
+﻿
+@model eShopCoreWeb.ViewModels.System.Users.RoleAssignRequest
+
+@{
+    ViewData["Title"] = "Gán quyền";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h1>Gán quyền</h1>
+    <!-- DataTales Example -->
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Gán quyền</li>
+    </ol>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"><a class="btn btn-success" asp-controller="Users" asp-action="Index">Danh sách </a></h6>
+        </div>
+        <div class="card-body">
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RoleAssign">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="RoleId" value="@Model.RoleId" />
+                @for (var i = 0; i < Model.Roles.Count; i++)
+                {
+                    <div class="form-group">
+                        <label>
+                            @Model.Roles[i].Name
+                            <input type="checkbox" asp-for="Roles[i].Selected" />
+                            <input type="hidden" asp-for="Roles[i].Id" />
+                            <input type="hidden" asp-for="Roles[i].Name" />
+                        </label>
+                    </div>
+                }
+            <div class="form-group">
+                <input type="submit" value="Lưu lại" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+        </div>
+    </div>
+</div>

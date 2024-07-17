@@ -1,0 +1,126 @@
+﻿@using eShopCoreWeb.ViewModels.Common;
+@model List<eShopCoreWeb.ViewModels.Sales.OrderViewModel>
+
+@{
+	ViewData["Title"] = "Danh sách don hang";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Scripts{
+	<script>
+		setTimeout(function () {
+			$('#msgAlert').fadeOut('slow');
+		}, 2000);
+	</script>
+}
+	<div class="container-fluid">
+		<h1>Danh sách don hang</h1>
+		<!-- DataTales Example -->
+		<ol class="breadcrumb mb-4">
+			<li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+			<li class="breadcrumb-item active">Danh sách don hang</li>
+		</ol>
+		<!-- DataTales Example -->
+		<div class="card shadow mb-4">
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-6">
+					@if (ViewBag.ResultMsg != null && ViewBag.ResultMsg.Contains("thành công"))
+					{
+						<div class="alert alert-success" role="alert">
+							@ViewBag.ResultMsg
+						</div>
+					}
+					@if (ViewBag.ResultMsg != null && ViewBag.ResultMsg.Contains("thất bại"))
+					{
+						<div class="alert alert-danger" role="alert">
+							@ViewBag.ResultMsg
+						</div>
+					}
+				</div>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th><localize>ShipName</localize></th>
+							<th><localize>ShipAddress</localize></th>
+							<th><localize>ShipEmail</localize></th>
+							<th><localize>ShipPhoneNumber</localize></th>
+							<th><localize>OrderDate</localize></th>
+							<th style="text-align:center;align-items: center;"><localize>Status</localize></th>
+							<th><localize>Total</localize></th>
+							<th><localize>Order Details</localize></th>
+							<th><localize>Operation</localize> </th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td>
+									@Html.DisplayFor(modelItem => item.ShipName)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.ShipAddress)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.ShipEmail)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.ShipPhoneNumber)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.OrderDate)
+								</td>
+								@if (item.Status == 0)
+								{
+									<td class ="label">
+										InProgress
+									</td>
+								}
+								else if (item.Status == 1)
+								{
+									<td class="label label-info">
+										Confirmed
+									</td>
+								}
+								else if (item.Status == 2)
+								{
+									<td class="label label-inverse">
+										Shipping
+									</td>
+								}
+								else if (item.Status == 3)
+								{
+									<td class="label label-success">
+										Success
+									</td>
+								}
+								else
+								{
+									<td class="label label-important">
+										Canceled
+									</td>
+								}
+								<td>
+									@Html.DisplayFor(modelItem => item.Total)
+								</td>
+								<td localize-content>
+									@Html.ActionLink("Order Details","OrderDetails", "User", new {orderId=item.Id})
+								</td>
+								<td>
+									<a href="@Url.Action("UpdateStatus", "User", new {orderId=item.Id, username=User.Identity.Name})" class="btn btn-btn-danger">Cancel</a>
+								</td>
+								<td>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+<!-- /.container-fluid -->
+<!-- End of Main Content -->

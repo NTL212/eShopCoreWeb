@@ -1,0 +1,116 @@
+﻿
+@using eShopCoreWeb.ViewModels.Catalog.ProductImages
+@model ProductImageCreateRequest
+@{
+    ViewData["Title"] = "Thêm hình ảnh cho sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <h1>Thêm hình ảnh cho sản phẩm</h1>
+    <!-- DataTales Example -->
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+        <li class="breadcrumb-item active">Thêm hình ảnh cho sản phẩm</li>
+    </ol>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"><a class="btn btn-success" asp-controller="Product" asp-action="Index">Danh sách sản phẩm</a></h6>
+            
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-1">
+                     @if (ViewBag.ResultMsg != null && ViewBag.ResultMsg.Contains("thành công"))
+                    {
+                        <div class="alert alert-success" role="alert">
+                            @ViewBag.ResultMsg
+                        </div>
+                    }
+                    @if (ViewBag.ResultMsg != null && ViewBag.ResultMsg.Contains("thất bại"))
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ViewBag.ResultMsg
+                        </div>
+                    }
+                </div>
+                <div class="col-md-4">
+                    <h6>Danh sách hình ảnh của sản phẩm @ViewBag.ProductId</h6>
+                    @{
+                        if(ViewBag.Images!=null)
+                        {
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                            <tr>
+                            <th>
+                            Hình ảnh
+                            </th>
+                             <th>
+                            Caption
+                            </th>
+                             <th>
+                            IsDefault
+                            </th>
+                             <th>
+                            Thao tác
+                            </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach(var image in (List<ProductImageViewModel>)ViewBag.Images)
+                    {
+                        <tr>
+                        <td>
+                        <img style="width:100px;height:100px;" src="@("https://localhost:44321/user-content/"+ @image.ImagePath)"/>
+                        </td>
+                        <td>
+                        @image.Caption
+                        </td>
+                        <td>
+                        @image.IsDefault
+                        </td>
+                        <td>
+                         @Html.ActionLink("Cập nhật ảnh","UpdateImage","Product", new {imageId=image.Id}) |
+                        @Html.ActionLink("Xóa ảnh","DeleteImage","Product", new {imageId=image.Id})
+                        </td>
+                        </tr>
+                    }
+                            </tbody>
+                            </table>
+                        }
+                    }
+                </div>
+                <div class="col-md-4">
+                    <form enctype="multipart/form-data" asp-action="AddImages" asp-controller="Product" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Caption" class="control-label"></label>
+                            <input asp-for="Caption" class="form-control" />
+                            <input type="hidden" name="productId" value="@ViewBag.ProductId" />
+                            <span asp-validation-for="Caption" class="text-danger"></span>
+                        </div>
+                        <div class="form-group form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" asp-for="IsDefault" /> @Html.DisplayNameFor(model => model.IsDefault)
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SortOrder" class="control-label"></label>
+                            <input asp-for="SortOrder" class="form-control" />
+                            <span asp-validation-for="SortOrder" class="text-danger"></span>
+                        </div
+                         <div class="form-group">
+                            <label asp-for="ImageFile" class="control-label"></label>
+                            <input asp-for="ImageFile" type="file" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Thêm hình " class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
