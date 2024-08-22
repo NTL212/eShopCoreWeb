@@ -2,6 +2,15 @@
 # **Introduction**
 -  A online shopping platform designed for store owners to manage their products and for 
 consumers to browse, purchase, and track orders. (ASP.NET Core 6 + Bootstrap)
+-  Structure:
+    -  AdminApp: An administrative application that allows store owners to manage products, categories, user roles, orders, and users.
+    -  ApiIntegration: Integration of APIs.
+    -  Application: The business logic layer of the website.
+    -  BackendApi: The backend API of the website, providing API services for the web application.
+    -  Data: The data access layer of the website, containing query logic, data storage, etc.
+    -  Utilities: A layer containing utility functions.
+    -  eShopCoreWeb: The main web application of the website, containing user interfaces
+
 # **Page**
 - Login ![image](https://github.com/user-attachments/assets/740469d4-2533-4634-80c1-c78bf5fae823)
 - Register ![image](https://github.com/user-attachments/assets/6899654a-e4db-4c2b-b7bf-6a3ee1bb9b3a)
