@@ -26,7 +26,7 @@ consumers to browse, purchase, and track orders. (ASP.NET Core 6 + Bootstrap)
     -   CRUD Product, Category
     -   Assign role, category
     -   Order, User management
-    -   Sales reports
+...
       
 # **How to configure and run**
 
